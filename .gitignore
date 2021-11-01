@@ -6,5 +6,6 @@ _pycache__/
 .coverage
 .coverage.*
 
+build/
 dist/
 .venv
