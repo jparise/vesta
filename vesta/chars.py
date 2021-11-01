@@ -2,6 +2,7 @@ import enum
 import math
 import re
 import sys
+from typing import List
 from typing import TextIO
 from typing import Union
 from typing import cast
@@ -52,7 +53,7 @@ def iscode(n: int) -> bool:
     return 0 <= n <= 69
 
 
-def encode(s: str) -> list[int]:
+def encode(s: str) -> List[int]:
     """Encode a string as a list of character codes.
 
     In addition to printable characters, the string can contain character code
@@ -86,7 +87,7 @@ def encode(s: str) -> list[int]:
     return out
 
 
-def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> list[int]:
+def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int]:
     """Encode a string as a row of character codes.
 
     In addition to printable characters, the string can contain character code
@@ -121,7 +122,7 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> list[int
 
 
 def pprint(
-    data: Union[list[int], list[list[int]]],
+    data: Union[List[int], List[List[int]]],
     stream: TextIO = sys.stdout,
     *,
     sep: str = "|",
@@ -132,7 +133,7 @@ def pprint(
     ``data`` may be a single list or a two-dimensional array of character codes.
     """
     rows = cast(
-        list[list[int]],
+        List[List[int]],
         data if data and isinstance(data[0], list) else [data],
     )
 
