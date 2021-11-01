@@ -29,6 +29,7 @@ jobs:
           pip install -e .
       - name: Lint
         run: |
+          python setup.py check --strict
           flake8
       - name: Tests
         run: |
