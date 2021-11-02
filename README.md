@@ -5,7 +5,11 @@ It provides an API client and character-encoding utilities.
 
 ## Installation
 
-Vesta requires Python 3.6 or later.
+Vesta requires Python 3.6 or later. It can be installed via PyPI:
+
+```sh
+$ python -m pip install vesta
+```
 
 It's only runtime dependency is the [Requests library][requests], which will be
 installed automatically.
