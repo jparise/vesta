@@ -49,17 +49,20 @@ class Color(enum.IntEnum):
 
 
 def iscode(n: int) -> bool:
-    """Check if an integer value is a valid character code."""
+    """Checks if an integer value is a valid character code."""
     return 0 <= n <= 69
 
 
 def encode(s: str) -> List[int]:
-    """Encode a string as a list of character codes.
+    """Encodes a string as a list of character codes.
 
     In addition to printable characters, the string can contain character code
     sequences inside curly braces, such as ``{5}`` or ``{65}``.
 
     :raises ValueError: if the string contains unsupported characters or codes
+
+    >>> encode("{67} Hello, World {68}")
+    [67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68]
     """
     if VALID_RE.fullmatch(s) is None:
         raise ValueError(f"{s!r} contains unsupported characters or character codes")
@@ -88,7 +91,7 @@ def encode(s: str) -> List[int]:
 
 
 def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int]:
-    """Encode a string as a row of character codes.
+    """Encodes a string as a row of character codes.
 
     In addition to printable characters, the string can contain character code
     sequences inside curly braces, such as ``{5}`` or ``{65}``.
@@ -100,6 +103,9 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int
     :raises ValueError: if the string contains unsupported characters or codes,
                         or if the resulting encoding sequence would exceed the
                         maximum number of support characters
+
+    >>> encode_row("{67} Hello, World {68}", align="center")
+    [0, 0, 0, 67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68, 0, 0, 0]
     """
     row = encode(s)
 
@@ -131,6 +137,9 @@ def pprint(
     """Prints a console-formatted representation of encoded character data.
 
     ``data`` may be a single list or a two-dimensional array of character codes.
+
+    >>> pprint([67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68])
+    |◼︎| |H|E|L|L|O|,| |W|O|R|L|D| |◼︎|
     """
     rows = cast(
         List[List[int]],
