@@ -22,7 +22,14 @@ class Session(requests.Session):
 
 
 class Client:
-    """Vestaboard API Client"""
+    """Provides a Vestaboard API client interface.
+
+    Credentials must be provided as an ``api_key`` and ``api_secret``.
+
+    Optional, an alternate ``base_url`` can be specified, as well as any
+    additional HTTP ``headers`` that should be sent with every request
+    (such as a custom `User-Agent` header).
+    """
 
     def __init__(
         self,
