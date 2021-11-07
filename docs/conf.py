@@ -18,6 +18,7 @@ release = version
 
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
 ]
 intersphinx_mapping = {
