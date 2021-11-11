@@ -9,6 +9,19 @@ Vesta
 Vesta is a `Vestaboard <https://www.vestaboard.com/>`_ client library for
 Python. It provides an API client and character encoding utilities.
 
+Installation
+------------
+
+Vesta requires Python 3.6 or later. It can be installed `via PyPI
+<https://pypi.org/project/vesta/>`_::
+
+    $ python -m pip install vesta
+
+It's only runtime dependency is the `Requests`_ library, which will be
+installed automatically.
+
+.. _Requests: https://requests.readthedocs.io/
+
 API Client
 ----------
 
