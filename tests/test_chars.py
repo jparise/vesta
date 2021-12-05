@@ -1,6 +1,6 @@
 import unittest
 
-from vesta.chars import PRINTABLE
+from vesta.chars import CHARCODES
 from vesta.chars import Color
 from vesta.chars import encode
 from vesta.chars import encode_row
@@ -8,7 +8,7 @@ from vesta.chars import encode_row
 
 class EncodeTests(unittest.TestCase):
     def test_printable_characters(self):
-        for c in PRINTABLE:
+        for c in CHARCODES:
             encode(c)
 
     def test_character_codes(self):

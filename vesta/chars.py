@@ -9,8 +9,8 @@ from typing import cast
 
 ROWS = 6
 COLS = 22
-PRINTABLE = " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$() - +&=;: '\"%,.  /? °"
-CHARCODES = {c: index for index, c in enumerate(PRINTABLE)}
+PRINTABLE = " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$()_-_+&=;:_'\"%,.__/?_°"
+CHARCODES = {c: idx for idx, c in enumerate(PRINTABLE) if c != "_"}
 
 # Regular expression that matches supported characters.
 VALID_RE = re.compile(
