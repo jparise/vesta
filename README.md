@@ -53,7 +53,7 @@ curly braces, such as `{5}` or `{65}`.
 
 ```python
 >>> vesta.encode("{67} Hello, World {68}")
-[67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68]
+[67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68]
 ```
 
 `encode_row(s)` encodes a string as a row of character codes. It builds on
@@ -61,14 +61,14 @@ curly braces, such as `{5}` or `{65}`.
 
 ```python
 >>> vesta.encode_row("{67} Hello, World {68}", align="center")
-[0, 0, 0, 67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68, 0, 0, 0]
+[0, 0, 0, 67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68, 0, 0, 0]
 ```
 
 Lastly, `pprint()` can be used to pretty-print encoded characters to the
 console, which can be useful during development.
 
 ```python
->>> vesta.pprint([0, 0, 0, 67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68, 0, 0, 0])
+>>> vesta.pprint([0, 0, 0, 67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68, 0, 0, 0])
 | | | |◼︎| |H|E|L|L|O|,| |W|O|R|L|D| |◼︎| | | |
 ```
 

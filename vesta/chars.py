@@ -62,7 +62,7 @@ def encode(s: str) -> List[int]:
     :raises ValueError: if the string contains unsupported characters or codes
 
     >>> encode("{67} Hello, World {68}")
-    [67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68]
+    [67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68]
     """
     if VALID_RE.fullmatch(s) is None:
         raise ValueError(f"{s!r} contains unsupported characters or character codes")
@@ -105,7 +105,7 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int
                         maximum number of support characters
 
     >>> encode_row("{67} Hello, World {68}", align="center")
-    [0, 0, 0, 67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68, 0, 0, 0]
+    [0, 0, 0, 67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68, 0, 0, 0]
     """
     row = encode(s)
 
@@ -138,7 +138,7 @@ def pprint(
 
     ``data`` may be a single list or a two-dimensional array of character codes.
 
-    >>> pprint([67, 61, 8, 5, 12, 12, 15, 55, 61, 23, 15, 18, 12, 4, 61, 68])
+    >>> pprint([67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68])
     |◼︎| |H|E|L|L|O|,| |W|O|R|L|D| |◼︎|
     """
     rows = cast(
