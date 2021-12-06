@@ -43,6 +43,7 @@ includes some useful routines for working with these character codes.
 
 .. autofunction:: vesta.encode
 .. autofunction:: vesta.encode_row
+.. autofunction:: vesta.encode_text
 
 .. autofunction:: vesta.pprint
 
