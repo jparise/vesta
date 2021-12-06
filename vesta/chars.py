@@ -2,6 +2,7 @@ import enum
 import math
 import re
 import sys
+from typing import AbstractSet
 from typing import List
 from typing import TextIO
 from typing import Union
@@ -102,7 +103,7 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int
 
     :raises ValueError: if the string contains unsupported characters or codes,
                         or if the resulting encoding sequence would exceed the
-                        maximum number of support characters
+                        maximum number of supported columns
 
     >>> encode_row("{67} Hello, World {68}", align="center")
     [0, 0, 0, 67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68, 0, 0, 0]
@@ -112,10 +113,68 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int
     if len(row) > COLS:
         raise ValueError(f"{s!r} results in {len(row)} characters (max {COLS})")
 
+    return _format_row(row, align, 0, fill)
+
+
+def encode_text(
+    s: str,
+    align: str = "left",
+    margin: int = 0,
+    fill: int = Color.BLACK,
+    breaks: AbstractSet[int] = frozenset({0}),
+) -> List[List[int]]:
+    """Encodes a string of text into rows of character codes.
+
+    In addition to printable characters, the string can contain character code
+    sequences inside curly braces, such as ``{5}`` or ``{65}``.
+
+    ``align`` controls the text's alignment within the row: `left`, `right`, or
+    `center`. `margin` specifies the width (in columns) of the left and right
+    margins. The ``fill`` character code (generally a :py:class:`Color`) is
+    used to fill out any additional space.
+
+    ``breaks`` is the set of character codes used to compute line breaks. If a
+    line of text won't fit in the available columns, it will be "broken" at the
+    first preceding break character, and the remaining characters will continue
+    on the next row (potentially subject to additional breaks). If a break
+    cannot be found, the line will be broken at the column limit (potentially
+    mid-"word").
+
+    :raises ValueError: if the string contains unsupported characters or codes,
+                        or if the resulting encoding sequence would exceed the
+                        maximum number of supported rows
+    """
+    max_cols = COLS - margin * 2
+    rows: List[List[int]] = []
+
+    def find_break(line: str) -> int:
+        end = min(len(line), max_cols)
+        for pos in range(end, 0, -1):
+            if line[pos] in breaks:
+                return pos
+        return end
+
+    for line in map(encode, s.splitlines()):
+        while len(line) > max_cols:
+            pos = find_break(line)
+            rows.append(_format_row(line[:pos], align, margin, fill))
+            line = line[pos:]
+
+        rows.append(_format_row(line, align, margin, fill))
+
+    if len(rows) > ROWS:
+        raise ValueError(f"{s!r} results in {len(rows)} lines (max {ROWS})")
+
+    return rows
+
+
+def _format_row(row: List[int], align: str, margin: int, fill: int) -> List[int]:
+    assert len(row) <= COLS - margin * 2
+
     if align == "left":
-        row = row + [fill] * (COLS - len(row))
+        row = [fill] * margin + row + [fill] * (COLS - len(row) - margin)
     elif align == "right":
-        row = [fill] * (COLS - len(row)) + row
+        row = [fill] * (COLS - len(row) - margin) + row + [fill] * margin
     elif align == "center":
         pad = (COLS - len(row)) / 2
         row = [fill] * math.floor(pad) + row + [fill] * math.ceil(pad)
