@@ -8,6 +8,9 @@ from urllib.parse import urljoin
 
 import requests
 
+from .chars import COLS
+from .chars import ROWS
+
 __all__ = ["Client"]
 
 
@@ -73,18 +76,24 @@ class Client:
 
         The authenticated viewer must have access to the subscription.
 
-        `message` can be either a string of text or a two-dimensional array of
-        character codes representing the exact positions of characters on the
-        board.
+        `message` can be either a string of text or a two-dimensional (6, 22)
+        array of character codes representing the exact positions of characters
+        on the board.
 
         If text is specified, lines will be centered horizontally and
         vertically if possible. Character codes will be inferred for
         alphanumeric and punctuation, or can be explicitly specified in-line in
         the message with curly braces containing the character code.
+
+        :raises ValueError: if `message` is a list with unsupported dimensions
         """
         if isinstance(message, str):
             data = {"text": message}
         elif isinstance(message, list):
+            if len(message) != ROWS or not all(len(row) == COLS for row in message):
+                raise ValueError(
+                    f"expected a ({ROWS}, {COLS}) array of encoded characters"
+                )
             data = {"characters": message}
         else:
             raise TypeError(f"unsupported message type: {type(message)}")
