@@ -147,7 +147,7 @@ def encode_text(
     max_cols = COLS - margin * 2
     rows: List[List[int]] = []
 
-    def find_break(line: str) -> int:
+    def find_break(line: List[int]) -> int:
         end = min(len(line), max_cols)
         for pos in range(end, 0, -1):
             if line[pos] in breaks:
