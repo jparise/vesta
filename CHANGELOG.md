@@ -1,8 +1,13 @@
 # Changelog
 
+## 0.7.1 - 2021-12-19
+### Fixed
+- `encode_text()` was adding a leading blank character to the row after a line
+  break.
+
 ## 0.7.0 - 2021-12-19
 ### Added
-- `encode_text()` offers a `valign` argument for controling vertical alignment
+- `encode_text()` offers a `valign` argument for controlling vertical alignment
   within the board.
 - `Client.post_message()` now raises ValueError if `message` is a list of
   encoded characters with the wrong dimensions. 
