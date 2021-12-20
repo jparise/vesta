@@ -119,19 +119,23 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int
 def encode_text(
     s: str,
     align: str = "left",
+    valign: str = "top",
     margin: int = 0,
     fill: int = Color.BLACK,
     breaks: AbstractSet[int] = frozenset({0}),
 ) -> List[List[int]]:
-    """Encodes a string of text into rows of character codes.
+    """Encodes a string of text into six full rows of character codes.
 
     In addition to printable characters, the string can contain character code
     sequences inside curly braces, such as ``{5}`` or ``{65}``.
 
     ``align`` controls the text's alignment within the row: `left`, `right`, or
-    `center`. `margin` specifies the width (in columns) of the left and right
-    margins. The ``fill`` character code (generally a :py:class:`Color`) is
-    used to fill out any additional space.
+    `center`. ``valign`` controls the text's vertical alignment within the full
+    board: `top`, `middle`, or `bottom`.
+
+    ``margin`` specifies the width (in columns) of the left and right margins.
+    The ``fill`` character code (generally a :py:class:`Color`) is used to fill
+    out any additional space.
 
     ``breaks`` is the set of character codes used to compute line breaks. If a
     line of text won't fit in the available columns, it will be "broken" at the
@@ -143,6 +147,16 @@ def encode_text(
     :raises ValueError: if the string contains unsupported characters or codes,
                         or if the resulting encoding sequence would exceed the
                         maximum number of supported rows
+
+    >>> encode_text("multiple\nlines\nof\ntext", align="center", valign="middle")
+    [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 13, 21, 12, 20, 9, 16, 12, 5, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 12, 9, 14, 5, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 5, 24, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]
     """
     max_cols = COLS - margin * 2
     rows: List[List[int]] = []
@@ -164,6 +178,17 @@ def encode_text(
 
     if len(rows) > ROWS:
         raise ValueError(f"{s!r} results in {len(rows)} lines (max {ROWS})")
+    elif len(rows) < ROWS:
+        empty = [fill] * COLS
+        if valign == "top":
+            rows += [empty] * (ROWS - len(rows))
+        elif valign == "bottom":
+            rows = [empty] * (ROWS - len(rows)) + rows
+        elif valign == "middle":
+            pad = (ROWS - len(rows)) / 2
+            rows = [empty] * math.floor(pad) + rows + [empty] * math.ceil(pad)
+        else:
+            raise ValueError(f"unknown vertical alignment: {valign}")
 
     return rows
 

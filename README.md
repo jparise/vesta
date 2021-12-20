@@ -65,16 +65,18 @@ curly braces, such as `{5}` or `{65}`.
 ```
 
 `encode_text()` encodes a string of text into rows of character codes, further
-building on `encode()` and `encode_row()` with the addition of margin control
-and line breaks.
+building on `encode()` and `encode_row()` with the addition of alignment,
+margin control, and line breaks.
 
 ```python
->>> encode_text("multiple\nlines\nof\ntext", align="center")
+>>> encode_text("multiple\nlines\nof\ntext", align="center", valign="middle")
 [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 13, 21, 12, 20, 9, 16, 12, 5, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 12, 9, 14, 5, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 5, 24, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 ```
 
