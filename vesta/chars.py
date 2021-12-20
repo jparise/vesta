@@ -5,6 +5,7 @@ import sys
 from typing import AbstractSet
 from typing import List
 from typing import TextIO
+from typing import Tuple
 from typing import Union
 from typing import cast
 
@@ -161,18 +162,18 @@ def encode_text(
     max_cols = COLS - margin * 2
     rows: List[List[int]] = []
 
-    def find_break(line: list[int]) -> tuple[int, bool]:
+    def find_break(line: List[int]) -> Tuple[int, int]:
         end = min(len(line), max_cols)
         for pos in range(end, 0, -1):
             if line[pos] in breaks:
-                return pos, True
-        return end, False
+                return pos, pos + 1
+        return end, end
 
     for line in map(encode, s.splitlines()):
         while len(line) > max_cols:
-            pos, found = find_break(line)
+            pos, resume = find_break(line)
             rows.append(_format_row(line[:pos], align, margin, fill))
-            line = line[pos + (1 if found else 0) :]
+            line = line[resume:]
 
         rows.append(_format_row(line, align, margin, fill))
 
