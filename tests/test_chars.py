@@ -2,6 +2,7 @@ import unittest
 
 from vesta.chars import CHARCODES
 from vesta.chars import COLS
+from vesta.chars import ROWS
 from vesta.chars import Color
 from vesta.chars import encode
 from vesta.chars import encode_row
@@ -160,6 +161,11 @@ class EncodeTextTests(unittest.TestCase):
         )
         self.assertRaisesRegex(
             ValueError, "unknown vertical alignment", encode_text, "a", valign="unknown"
+        )
+
+    def test_maximum_rows(self):
+        self.assertRaisesRegex(
+            ValueError, f"results in {ROWS + 1} lines", encode_text, "a\n" * (ROWS + 1)
         )
 
     def test_margin(self):

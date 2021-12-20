@@ -176,19 +176,20 @@ def encode_text(
 
         rows.append(_format_row(line, align, margin, fill))
 
-    if len(rows) > ROWS:
-        raise ValueError(f"{s!r} results in {len(rows)} lines (max {ROWS})")
-    elif len(rows) < ROWS:
+    nrows = len(rows)
+    if nrows < ROWS:
         empty = [fill] * COLS
         if valign == "top":
-            rows += [empty] * (ROWS - len(rows))
+            rows += [empty] * (ROWS - nrows)
         elif valign == "bottom":
-            rows = [empty] * (ROWS - len(rows)) + rows
+            rows = [empty] * (ROWS - nrows) + rows
         elif valign == "middle":
-            pad = (ROWS - len(rows)) / 2
+            pad = (ROWS - nrows) / 2
             rows = [empty] * math.floor(pad) + rows + [empty] * math.ceil(pad)
         else:
             raise ValueError(f"unknown vertical alignment: {valign}")
+    elif nrows > ROWS:
+        raise ValueError(f"{s!r} results in {nrows} lines (max {ROWS})")
 
     return rows
 
