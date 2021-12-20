@@ -161,6 +161,15 @@ class EncodeTextTests(unittest.TestCase):
             encode_text("a\nb", valign="bottom"),
         )
 
+    def test_valign_none(self):
+        self.assertEqual(
+            [
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            ],
+            encode_text("a\nb", valign=None),
+        )
+
     def test_unknown_alignments(self):
         self.assertRaisesRegex(
             ValueError, "unknown alignment", encode_text, "a", align="unknown"
