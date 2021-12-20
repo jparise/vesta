@@ -113,7 +113,7 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int
     if len(row) > COLS:
         raise ValueError(f"{s!r} results in {len(row)} characters (max {COLS})")
 
-    return _format_row(row, align, 0, fill)
+    return _format_row(row, align, 0, int(fill))
 
 
 def encode_text(
@@ -158,6 +158,7 @@ def encode_text(
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ]
     """
+    fill = int(fill)
     max_cols = COLS - margin * 2
     rows: List[List[int]] = []
 
