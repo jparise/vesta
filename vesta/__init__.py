@@ -6,12 +6,12 @@ from .chars import pprint
 from .client import Client
 
 __all__ = (
-    'Color',
-    'encode',
-    'encode_row',
-    'encode_text',
-    'pprint',
-    'Client',
+    "Color",
+    "encode",
+    "encode_row",
+    "encode_text",
+    "pprint",
+    "Client",
 )
 
 __version__ = "0.7.1"

@@ -6,7 +6,6 @@ sys.path.insert(0, os.path.abspath(".."))
 
 from vesta import __version__ as version
 
-
 # Project
 
 project = "Vesta"
