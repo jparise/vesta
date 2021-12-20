@@ -161,18 +161,18 @@ def encode_text(
     max_cols = COLS - margin * 2
     rows: List[List[int]] = []
 
-    def find_break(line: List[int]) -> int:
+    def find_break(line: list[int]) -> tuple[int, bool]:
         end = min(len(line), max_cols)
         for pos in range(end, 0, -1):
             if line[pos] in breaks:
-                return pos
-        return end
+                return pos, True
+        return end, False
 
     for line in map(encode, s.splitlines()):
         while len(line) > max_cols:
-            pos = find_break(line)
+            pos, found = find_break(line)
             rows.append(_format_row(line[:pos], align, margin, fill))
-            line = line[pos:]
+            line = line[pos + (1 if found else 0) :]
 
         rows.append(_format_row(line, align, margin, fill))
 
