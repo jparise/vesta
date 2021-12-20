@@ -4,6 +4,7 @@ import re
 import sys
 from typing import Container
 from typing import List
+from typing import Optional
 from typing import TextIO
 from typing import Tuple
 from typing import Union
@@ -120,19 +121,20 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int
 def encode_text(
     s: str,
     align: str = "left",
-    valign: str = "top",
+    valign: Optional[str] = "top",
     margin: int = 0,
     fill: int = Color.BLACK,
     breaks: Container[int] = frozenset({0}),
 ) -> List[List[int]]:
-    """Encodes a string of text into six full rows of character codes.
+    """Encodes a string of text into rows of character codes.
 
     In addition to printable characters, the string can contain character code
     sequences inside curly braces, such as ``{5}`` or ``{65}``.
 
     ``align`` controls the text's alignment within the row: `left`, `right`, or
     `center`. ``valign`` controls the text's vertical alignment within the full
-    board: `top`, `middle`, or `bottom`.
+    board: `top`, `middle`, `bottom`, or None (to never add rows, potentially
+    resulting in a partial board).
 
     ``margin`` specifies the width (in columns) of the left and right margins.
     The ``fill`` character code (generally a :py:class:`Color`) is used to fill
@@ -178,7 +180,7 @@ def encode_text(
         rows.append(_format_row(line, align, margin, fill))
 
     nrows = len(rows)
-    if nrows < ROWS:
+    if nrows < ROWS and valign is not None:
         empty = [fill] * COLS
         if valign == "top":
             rows += [empty] * (ROWS - nrows)
