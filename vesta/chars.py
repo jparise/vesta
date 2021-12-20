@@ -2,7 +2,7 @@ import enum
 import math
 import re
 import sys
-from typing import AbstractSet
+from typing import Container
 from typing import List
 from typing import TextIO
 from typing import Tuple
@@ -123,7 +123,7 @@ def encode_text(
     valign: str = "top",
     margin: int = 0,
     fill: int = Color.BLACK,
-    breaks: AbstractSet[int] = frozenset({0}),
+    breaks: Container[int] = frozenset({0}),
 ) -> List[List[int]]:
     """Encodes a string of text into six full rows of character codes.
 
