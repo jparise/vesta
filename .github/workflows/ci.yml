@@ -36,6 +36,8 @@ jobs:
         run: |
           python setup.py check --strict
           flake8
+          black --check --diff .
+          isort --check --diff .
       - name: Tests
         run: |
           python -m pytest -v --cov=vesta --cov-report=term-missing
