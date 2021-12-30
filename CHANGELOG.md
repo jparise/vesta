@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.2 - 2021-12-30
+### Added
+- `encode_text()`'s `valign` argument can be set to `None` to disable row
+  padding.
+
+### Changed
+- `encode()`'s error handling has been improved. A `ValueError` will now
+  be raised for all unsupported character codes, including those within the
+  [0, 69] range such as 57, 58, and 61.
+
 ## 0.7.1 - 2021-12-19
 ### Fixed
 - `encode_text()` was adding a leading blank character to the row after a line
