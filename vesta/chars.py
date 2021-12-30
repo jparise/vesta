@@ -1,6 +1,5 @@
 import enum
 import math
-import re
 import sys
 from typing import Container
 from typing import List
@@ -13,19 +12,7 @@ from typing import cast
 ROWS = 6
 COLS = 22
 PRINTABLE = " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$() - +&=;: '\"%,.  /? °"
-CHARCODES = {c: idx for idx, c in enumerate(PRINTABLE) if idx == 0 or c != " "}
-
-# Regular expression that matches supported characters.
-VALID_RE = re.compile(
-    r"""
-    (?:
-        [ A-Za-z0-9!@#$()\-+&=;:'\"%,./?°]  # Printable Characters
-        |                                   # or
-        (?:\{\d{1,2}\})                     # Character Codes ({5} or {65})
-    )*
-    """,
-    re.VERBOSE,
-)
+CHARMAP = {c: i for i, c in enumerate(PRINTABLE) if i == 0 or c != " "}
 
 
 class Color(enum.IntEnum):
@@ -51,9 +38,8 @@ class Color(enum.IntEnum):
     # fmt: on
 
 
-def iscode(n: int) -> bool:
-    """Checks if an integer value is a valid character code."""
-    return 0 <= n <= 69
+# The set of all supported character codes.
+CHARCODES = frozenset(CHARMAP.values()).union(Color)
 
 
 def encode(s: str) -> List[int]:
@@ -67,28 +53,29 @@ def encode(s: str) -> List[int]:
     >>> encode("{67} Hello, World {68}")
     [67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68]
     """
-    if VALID_RE.fullmatch(s) is None:
-        raise ValueError(f"{s!r} contains unsupported characters or character codes")
-
     out = []
+    lens = len(s)
     skip_to = 0
     for i, c in enumerate(s.upper()):
         if i < skip_to:
             continue
 
         if c == "{":
-            if s[i + 2] == "}":
+            if lens > i + 2 and s[i + 2] == "}":
                 out.append(int(s[i + 1]))
                 skip_to = i + 3
-            elif s[i + 3] == "}":
+            elif lens > i + 3 and s[i + 3] == "}":
                 out.append(int(s[i + 1 : i + 3]))
                 skip_to = i + 4
             else:
-                raise ValueError(f"{i+1}: unmatched '{{'")  # pragma: no cover
-            if not iscode(out[-1]):
-                raise ValueError(f"{i+2}: bad character code: {out[-1]}")
+                raise ValueError(f"{i+1}: missing }} at index {i+2} or {i+3}")
+            if out[-1] not in CHARCODES:
+                raise ValueError(f"{i+2}: unsupported character code: {out[-1]}")
         else:
-            out.append(CHARCODES[c])
+            try:
+                out.append(CHARMAP[c])
+            except KeyError:
+                raise ValueError(f"{i+1}: unsupported character: {c}")
 
     return out
 
