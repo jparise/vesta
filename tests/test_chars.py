@@ -1,6 +1,7 @@
 import unittest
 
 from vesta.chars import CHARCODES
+from vesta.chars import CHARMAP
 from vesta.chars import COLS
 from vesta.chars import ROWS
 from vesta.chars import Color
@@ -11,18 +12,20 @@ from vesta.chars import encode_text
 
 class EncodeTests(unittest.TestCase):
     def test_printable_characters(self):
-        for c in CHARCODES:
+        for c in CHARMAP:
             encode(c)
 
     def test_character_codes(self):
-        for i in range(0, 70):
+        for i in CHARCODES:
             encode(f"{{{i}}}")
 
     def test_bad_characters(self):
-        self.assertRaisesRegex(ValueError, "unsupported characters", encode, "<>")
-        self.assertRaisesRegex(ValueError, "unsupported characters", encode, "{20")
-        self.assertRaisesRegex(ValueError, "unsupported characters", encode, "{999}")
-        self.assertRaisesRegex(ValueError, "bad character code", encode, "{99}")
+        self.assertRaisesRegex(ValueError, "unsupported character: <", encode, "<>")
+        self.assertRaisesRegex(
+            ValueError, "unsupported character code: 99", encode, "{99}"
+        )
+        self.assertRaisesRegex(ValueError, "missing }", encode, "{20")
+        self.assertRaisesRegex(ValueError, "missing }", encode, "{999}")
 
 
 class EncodeRowTests(unittest.TestCase):
