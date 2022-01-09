@@ -220,7 +220,7 @@ def pprint(
 
     # Assume all TTYs support color.
     colors = stream.isatty()
-    if colors:
+    if colors and sep:
         sep = f"\033[90m{sep}\033[0m"
 
     def symbol(code: int) -> str:

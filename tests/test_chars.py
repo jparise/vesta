@@ -1,3 +1,5 @@
+import io
+
 import pytest
 
 from vesta.chars import CHARCODES
@@ -8,6 +10,7 @@ from vesta.chars import Color
 from vesta.chars import encode
 from vesta.chars import encode_row
 from vesta.chars import encode_text
+from vesta.chars import pprint
 
 
 def test_encode_printable_characters():
@@ -192,3 +195,48 @@ class TestEncodeText:
             # fmt: on
         ]
         assert encode_text(" ".join(["word"] * 10)) == chars
+
+
+class TestPrint:
+    def pprint(self, data, **kwargs) -> str:
+        output = io.StringIO()
+        pprint(data, stream=output, **kwargs)
+        return output.getvalue()
+
+    def test_row(self):
+        chars = encode_row("{63} Centered {63}", align="center")
+        assert self.pprint(chars) == (
+            "| | | | | |◼︎| |C|E|N|T|E|R|E|D| |◼︎| | | | | |\n"
+        )
+
+    def test_rows(self):
+        chars = encode_text("{63} Centered {63}", align="center", valign="middle")
+        assert self.pprint(chars) == (
+            "| | | | | | | | | | | | | | | | | | | | | | |\n"
+            "| | | | | | | | | | | | | | | | | | | | | | |\n"
+            "| | | | | |◼︎| |C|E|N|T|E|R|E|D| |◼︎| | | | | |\n"
+            "| | | | | | | | | | | | | | | | | | | | | | |\n"
+            "| | | | | | | | | | | | | | | | | | | | | | |\n"
+            "| | | | | | | | | | | | | | | | | | | | | | |\n"
+        )
+
+    def test_sep(self):
+        chars = encode_row("{63} Centered {63}", align="center")
+        assert self.pprint(chars, sep="") == "     ◼︎ CENTERED ◼︎     \n"
+
+    def test_block(self):
+        chars = encode_row("{63} Centered {63}", align="center")
+        assert self.pprint(chars, block="_") == (
+            "| | | | | |_| |C|E|N|T|E|R|E|D| |_| | | | | |\n"
+        )
+
+    def test_colors(self, monkeypatch):
+        output = io.StringIO()
+        monkeypatch.setattr(output, "isatty", lambda: True)
+        pprint([65], stream=output)
+        assert (
+            output.getvalue() == "\x1b[90m|\x1b[0m\x1b[93m◼︎\x1b[0m\x1b[90m|\x1b[0m\n"
+        )
+
+    def test_unknown_character_code(self):
+        pytest.raises(ValueError, pprint, [99]).match("unknown character code: 99")
