@@ -23,14 +23,14 @@ installed automatically.
 
 The `Client` type is initialized with an API key and secret:
 
-```python
+```pycon
 >>> import vesta
 >>> client = vesta.Client(API_KEY, API_SECRET)
 ```
 
 Then, you can make API calls using one of the provided methods:
 
-```python
+```pycon
 >>> client.get_viewer()
 {'_id': ..., '_created': '1629081092624', 'type': 'installation', 'installation': {'_id': ...}}
 
@@ -51,7 +51,7 @@ includes some useful routines for working with these character codes.
 printable characters, the string can contain character code sequences inside
 curly braces, such as `{5}` or `{65}`.
 
-```python
+```pycon
 >>> vesta.encode("{67} Hello, World {68}")
 [67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68]
 ```
@@ -59,7 +59,7 @@ curly braces, such as `{5}` or `{65}`.
 `encode_row()` encodes a string as a row of character codes. It builds on
 `encode()` by providing alignment control.
 
-```python
+```pycon
 >>> vesta.encode_row("{67} Hello, World {68}", align="center")
 [0, 0, 0, 67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68, 0, 0, 0]
 ```
@@ -68,7 +68,7 @@ curly braces, such as `{5}` or `{65}`.
 building on `encode()` and `encode_row()` with the addition of alignment,
 margin control, and line breaks.
 
-```python
+```pycon
 >>> encode_text("multiple\nlines\nof\ntext", align="center", valign="middle")
 [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -83,7 +83,7 @@ margin control, and line breaks.
 Lastly, `pprint()` can be used to pretty-print encoded characters to the
 console, which can be useful during development.
 
-```python
+```pycon
 >>> vesta.pprint([0, 0, 0, 67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68, 0, 0, 0])
 | | | |◼︎| |H|E|L|L|O|,| |W|O|R|L|D| |◼︎| | | |
 ```
