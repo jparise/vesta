@@ -98,6 +98,10 @@ possible. Character codes will be inferred for alphanumeric and punctuation, or
 can be explicitly specified in-line in the message with curly braces containing
 the character code.
 
+## Examples
+
+- [Olympic Medal Standings](https://gist.github.com/jparise/f3142c58d3478ff1b236ee061f541724)
+
 ## License
 
 This project is licensed under the terms of the [MIT license](LICENSE).
