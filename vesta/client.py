@@ -90,7 +90,7 @@ class Client:
     def post_message(
         self,
         subscription_id: str,
-        message: Union[str, list],
+        message: Union[str, List[List[int]]],
     ) -> Dict[str, Any]:
         """Post of a new message to a subscription.
 
