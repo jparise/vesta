@@ -40,7 +40,7 @@ class Color(enum.IntEnum):
 
     ansi: str
 
-    def __new__(cls, value: int, ansi: str):
+    def __new__(cls, value: int, ansi: str) -> "Color":
         obj = int.__new__(cls, value)
         obj._value_ = value
         obj.ansi = ansi
@@ -228,7 +228,7 @@ def pprint(
     *,
     sep: str = "|",
     block: str = "◼︎",
-):
+) -> None:
     """Prints a console-formatted representation of encoded character data.
 
     ``data`` may be a single list or a two-dimensional array of character codes.

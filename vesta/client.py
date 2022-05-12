@@ -39,8 +39,14 @@ class Session(requests.Session):
         super().__init__()
         self.base_url = base_url
 
-    def request(self, method: str, url: str, *args, **kwargs) -> requests.Response:
-        url = urljoin(self.base_url, url)
+    def request(
+        self,
+        method: Union[str, bytes],
+        url: Union[str, bytes],
+        *args,
+        **kwargs,
+    ) -> requests.Response:
+        url = urljoin(self.base_url, url if isinstance(url, str) else url.decode())
         return super().request(method, url, *args, **kwargs)
 
 
@@ -107,6 +113,7 @@ class Client:
 
         :raises ValueError: if `message` is a list with unsupported dimensions
         """
+        data: Dict[str, Union[str, List[List[int]]]]
         if isinstance(message, str):
             data = {"text": message}
         elif isinstance(message, list):
