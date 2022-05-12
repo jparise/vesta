@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9, '3.10', 'pypy-3.7']
+        python-version: [3.7, 3.8, 3.9, '3.10', 'pypy-3.8']
 
     steps:
       - uses: actions/checkout@v3
@@ -38,6 +38,9 @@ jobs:
           flake8
           black --check --diff .
           isort --check --diff .
+      - name: Typing
+        run: |
+          python -m mypy -p vesta -p tests
       - name: Tests
         run: |
           python -m pytest -v --cov-config=setup.cfg
