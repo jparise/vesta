@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import enum
 import math
 import sys
@@ -33,6 +35,12 @@ ROWS = 6
 COLS = 22
 PRINTABLE = " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$() - +&=;: '\"%,.  /? °"
 CHARMAP = {c: i for i, c in enumerate(PRINTABLE) if i == 0 or c != " "}
+
+#: A row of character codes.
+Row = List[int]
+
+#: A list of rows, forming a character grid.
+Rows = List[Row]
 
 
 class Color(enum.IntEnum):
@@ -62,7 +70,7 @@ class Color(enum.IntEnum):
 CHARCODES = frozenset(CHARMAP.values()).union(Color)
 
 
-def encode(s: str) -> List[int]:
+def encode(s: str) -> Row:
     """Encodes a string as a list of character codes.
 
     In addition to printable characters, the string can contain character code
@@ -100,7 +108,7 @@ def encode(s: str) -> List[int]:
     return out
 
 
-def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> List[int]:
+def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> Row:
     """Encodes a string as a row of character codes.
 
     In addition to printable characters, the string can contain character code
@@ -132,7 +140,7 @@ def encode_text(
     margin: int = 0,
     fill: int = Color.BLACK,
     breaks: Container[int] = frozenset({0}),
-) -> List[List[int]]:
+) -> Rows:
     """Encodes a string of text into rows of character codes.
 
     In addition to printable characters, the string can contain character code
@@ -169,9 +177,9 @@ def encode_text(
     """
     fill = int(fill)
     max_cols = COLS - margin * 2
-    rows: List[List[int]] = []
+    rows: Rows = []
 
-    def find_break(line: List[int]) -> Tuple[int, int]:
+    def find_break(line: Row) -> Tuple[int, int]:
         end = min(len(line), max_cols)
         for pos in range(end, 0, -1):
             if line[pos] in breaks:
@@ -204,7 +212,7 @@ def encode_text(
     return rows
 
 
-def _format_row(row: List[int], align: str, margin: int, fill: int) -> List[int]:
+def _format_row(row: Row, align: str, margin: int, fill: int) -> Row:
     assert len(row) <= COLS - margin * 2
 
     if align == "left":
@@ -223,7 +231,7 @@ def _format_row(row: List[int], align: str, margin: int, fill: int) -> List[int]
 
 
 def pprint(
-    data: Union[List[int], List[List[int]]],
+    data: Union[Row, Rows],
     stream: TextIO = sys.stdout,
     *,
     sep: str = "|",
@@ -233,10 +241,7 @@ def pprint(
 
     ``data`` may be a single list or a two-dimensional array of character codes.
     """
-    rows = cast(
-        List[List[int]],
-        data if data and isinstance(data[0], list) else [data],
-    )
+    rows = cast(Rows, data if data and isinstance(data[0], list) else [data])
 
     # Assume all TTYs support color.
     colors = stream.isatty()

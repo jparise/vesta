@@ -35,6 +35,9 @@ All Vestaboard characters (letters, numbers, symbols, and colors) are encoded
 as integer `character codes <https://docs.vestaboard.com/characters>`_. Vesta
 includes some useful routines for working with these character codes.
 
+.. autodata:: vesta.chars.Row
+.. autodata:: vesta.chars.Rows
+
 .. autoclass:: vesta.Color
     :show-inheritance:
     :members:
