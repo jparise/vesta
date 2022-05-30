@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 from typing import Any
 from typing import Dict
 from typing import List
@@ -30,6 +32,7 @@ import requests
 
 from .chars import COLS
 from .chars import ROWS
+from .chars import Rows
 
 __all__ = ["Client"]
 
@@ -96,7 +99,7 @@ class Client:
     def post_message(
         self,
         subscription_id: str,
-        message: Union[str, List[List[int]]],
+        message: Union[str, Rows],
     ) -> Dict[str, Any]:
         """Post of a new message to a subscription.
 
@@ -113,7 +116,7 @@ class Client:
 
         :raises ValueError: if `message` is a list with unsupported dimensions
         """
-        data: Dict[str, Union[str, List[List[int]]]]
+        data: Dict[str, Union[str, Rows]]
         if isinstance(message, str):
             data = {"text": message}
         elif isinstance(message, list):
