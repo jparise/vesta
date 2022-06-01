@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3 - 2022-05-31
+### Added
+- Various typing improvements, including a `py.typed` marker file.
+
 ## 0.7.2 - 2021-12-30
 ### Added
 - `encode_text()`'s `valign` argument can be set to `None` to disable row
