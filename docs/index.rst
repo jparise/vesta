@@ -1,16 +1,12 @@
+=====
 Vesta
 =====
-
-.. image:: _static/logo.png
-    :alt: Vesta: A Vestaboard client library
-    :align: center
-    :target: https://github.com/jparise/vesta
 
 Vesta is a `Vestaboard <https://www.vestaboard.com/>`_ client library for
 Python. It provides an API client and character encoding utilities.
 
 Installation
-------------
+============
 
 Vesta requires Python 3.7 or later. It can be installed `via PyPI
 <https://pypi.org/project/vesta/>`_::
@@ -22,14 +18,17 @@ installed automatically.
 
 .. _Requests: https://requests.readthedocs.io/
 
-API Client
+API Clients
+===========
+
+``Client``
 ----------
 
 .. autoclass:: vesta.Client
     :members:
 
 Character Encoding
-------------------
+==================
 
 All Vestaboard characters (letters, numbers, symbols, and colors) are encoded
 as integer `character codes <https://docs.vestaboard.com/characters>`_. Vesta
@@ -51,7 +50,7 @@ includes some useful routines for working with these character codes.
 .. autofunction:: vesta.pprint
 
 Message Posting
----------------
+===============
 
 Messages can be posted (using :py:meth:`vesta.Client.post_message`) as either
 text strings or two-dimensional arrays of character codes representing the
