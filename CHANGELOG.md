@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 - unreleased
+### Added
+- `LocalClient` provides a client interface to Vestaboard's Local API.
+
+### Changed
+- The documentation now uses the [Furo theme](https://github.com/pradyunsg/furo).
+- [Requests](https://requests.readthedocs.io/) version 2.27.0 or later is now required.
+
 ## 0.7.3 - 2022-05-31
 ### Added
 - Various typing improvements, including a `py.typed` marker file.

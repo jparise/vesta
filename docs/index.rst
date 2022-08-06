@@ -27,6 +27,21 @@ API Clients
 .. autoclass:: vesta.Client
     :members:
 
+``LocalClient``
+---------------
+
+:py:class:`vesta.LocalClient` provides a client interface for interacting with
+a Vestaboard over the local network using `Vestaboard's Local API
+<https://docs.vestaboard.com/local>`_.
+
+.. important::
+
+    Vestaboard owners must first request a `Local API enablement token
+    <https://www.vestaboard.com/local-api>`_ in order to use the Local API.
+
+.. autoclass:: vesta.LocalClient
+    :members:
+
 Character Encoding
 ==================
 

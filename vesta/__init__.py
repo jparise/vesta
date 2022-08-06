@@ -3,7 +3,8 @@ from .chars import encode
 from .chars import encode_row
 from .chars import encode_text
 from .chars import pprint
-from .client import Client
+from .clients import Client
+from .clients import LocalClient
 
 __all__ = (
     "Color",
@@ -12,6 +13,7 @@ __all__ = (
     "encode_text",
     "pprint",
     "Client",
+    "LocalClient",
 )
 
-__version__ = "0.7.3"
+__version__ = "0.8.0"
