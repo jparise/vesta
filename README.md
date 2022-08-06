@@ -19,7 +19,9 @@ installed automatically.
 
 ## Usage
 
-### API Client
+### API Clients
+
+#### `Client`
 
 The `Client` type is initialized with an API key and secret:
 
@@ -39,6 +41,29 @@ Then, you can make API calls using one of the provided methods:
 
 >>> client.post_message(SUBSCRIPTION_ID, "Hello, World")
 {'message': {'id': ..., 'text': 'Hello, World', 'created': '1635801572442'}}
+```
+
+#### `LocalClient`
+
+`LocalClient` provides a client interface for interacting with a Vestaboard
+over the local network using [Vestaboard's Local API](https://docs.vestaboard.com/local).
+
+Note that Vestaboard owners must first request a
+[Local API enablement token](https://www.vestaboard.com/local-api)
+in order to use the Local API.
+
+```py
+import vesta
+local_client = vesta.LocalClient()
+
+# The Vestaboard's Local API must be enabled once to get its Local API key.
+r = local_client.enable(ENABLEMENT_TOKEN)
+local_client.api_key = r["apiKey"]
+
+# Then, you can write and read messages.
+message = vesta.encode("{67} Hello, World {68}")
+assert local_client.write_message(message)
+assert local_client.read_message() == message
 ```
 
 ### Character Encoding
