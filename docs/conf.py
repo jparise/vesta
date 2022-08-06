@@ -33,8 +33,9 @@ autodoc_type_aliases = {
 
 # HTML
 
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"
 html_title = f"Vesta Documentation ({version})"
+html_logo = "_static/logo.png"
 html_static_path = ["_static"]
 html_copy_source = False
 html_show_sourcelink = False
