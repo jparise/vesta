@@ -145,8 +145,8 @@ class LocalClient:
 
     If you've already enabled your Vestaboard's Local API, that key can be
     provided immediately. Otherwise, it can be set after the client is
-    constructed by calling :py:meth:`~enable` and assigning the resulting
-    Local API key to the :py:attr:`~api_key` property.
+    constructed by calling :py:meth:`~enable`, which also returns the Local API
+    key for future reuse.
 
     An alternate ``base_url`` can also be specified.
 
@@ -180,22 +180,31 @@ class LocalClient:
 
     @property
     def enabled(self) -> bool:
-        """Check if a Local API key has been set, enabling the Local API."""
+        """Check if :py:attr:`~api_key` has been set, indicating that Local API
+        support has been enabled."""
         return self.api_key is not None
 
-    def enable(self, enablement_token) -> Dict[str, Any]:
+    def enable(self, enablement_token) -> Optional[str]:
         """Enable the Vestaboard's Local API using a Local API Enablement Token.
 
-        If successful, the response will contain an API key that can be used to
-        read and write messages. Assign it to the :py:attr:`~api_key`
-        property before calling those methods.
+        If successful, the Vestaboard's Local API key will be returned and the
+        client's :py:attr:`~api_key` property will be updated to the new value.
         """
         r = self.session.post(
             "/local-api/enablement",
             headers={"X-Vestaboard-Local-Api-Enablement-Token": enablement_token},
         )
         r.raise_for_status()
-        return r.json()
+
+        try:
+            local_api_key = r.json().get("apiKey")
+        except requests.JSONDecodeError:
+            local_api_key = None
+
+        if local_api_key:
+            self.api_key = local_api_key
+
+        return local_api_key
 
     def read_message(self) -> Optional[Rows]:
         """Read the Vestaboard's current message."""
