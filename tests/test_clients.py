@@ -101,13 +101,17 @@ class TestLocalClient:
         assert local_client.enabled
         assert local_client.api_key == local_api_key
 
-    def test_enable(self, local_client: LocalClient, requests_mock: Mocker):
+    def test_enable(self, requests_mock: Mocker):
+        local_client = LocalClient()
+        local_api_key = "key"
         requests_mock.post(
             "http://vestaboard.local:7000/local-api/enablement",
-            json={"message": "Local API enabled", "apiKey": "key"},
+            json={"apiKey": local_api_key},
         )
-        r = local_client.enable("enablement_token")
-        assert "apiKey" in r
+        rv = local_client.enable("enablement_token")
+        assert rv == local_api_key
+        assert local_client.api_key == local_api_key
+        assert local_client.enabled
         assert requests_mock.last_request
         assert (
             requests_mock.last_request.headers.get(
@@ -115,6 +119,14 @@ class TestLocalClient:
             )
             == "enablement_token"
         )
+
+    def test_enable_failure(self, requests_mock: Mocker):
+        local_client = LocalClient()
+        requests_mock.post("http://vestaboard.local:7000/local-api/enablement")
+        rv = local_client.enable("enablement_token")
+        assert rv is None
+        assert not local_client.api_key
+        assert not local_client.enabled
 
     def test_not_enabled(self):
         local_client = LocalClient()

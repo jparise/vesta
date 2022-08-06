@@ -56,11 +56,14 @@ in order to use the Local API.
 import vesta
 local_client = vesta.LocalClient()
 
-# The Vestaboard's Local API must be enabled once to get its Local API key.
-r = local_client.enable(ENABLEMENT_TOKEN)
-local_client.api_key = r["apiKey"]
+# The Vestaboard's Local API must be enabled to get its Local API key. After
+# you've done this once, you can save the key somewhere safe and pass it
+# directly to LocalClient() for future client initializations.
+local_api_key = local_client.enable(ENABLEMENT_TOKEN)
+# e.g. local_client = LocalClient(local_api_key)
+assert local_client.enabled
 
-# Then, you can write and read messages.
+# Once enabled, you can write and read messages:
 message = vesta.encode("{67} Hello, World {68}")
 assert local_client.write_message(message)
 assert local_client.read_message() == message
