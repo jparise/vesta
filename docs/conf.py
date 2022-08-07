@@ -25,6 +25,7 @@ intersphinx_mapping = {
 }
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+autodoc_preserve_defaults = True
 autodoc_type_aliases = {
     "Row": "vesta.chars.Row",
     "Rows": "vesta.chars.Rows",

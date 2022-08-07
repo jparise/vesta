@@ -43,6 +43,14 @@ Then, you can make API calls using one of the provided methods:
 {'message': {'id': ..., 'text': 'Hello, World', 'created': '1635801572442'}}
 ```
 
+Messages can be posted as either text strings or two-dimensional arrays of
+character codes representing the exact positions of characters on the board.
+
+If text is specified, the lines will be centered horizontally and vertically.
+Character codes will be inferred for alphanumeric and punctuation characters,
+or they can be explicitly specified using curly braces containing the character
+code (such as `{5}` or `{65}`).
+
 #### `LocalClient`
 
 `LocalClient` provides a client interface for interacting with a Vestaboard
@@ -115,16 +123,6 @@ console, which can be useful during development.
 >>> vesta.pprint([0, 0, 0, 67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68, 0, 0, 0])
 | | | |◼︎| |H|E|L|L|O|,| |W|O|R|L|D| |◼︎| | | |
 ```
-
-### Message Posting
-
-Messages can be posted as either text strings or two-dimensional arrays of
-character codes representing the exact positions of characters on the board.
-
-If text is specified, lines will be centered horizontally and vertically if
-possible. Character codes will be inferred for alphanumeric and punctuation, or
-can be explicitly specified in-line in the message with curly braces containing
-the character code.
 
 ## Examples
 

@@ -110,12 +110,12 @@ class Client:
         array of character codes representing the exact positions of characters
         on the board.
 
-        If text is specified, lines will be centered horizontally and
-        vertically if possible. Character codes will be inferred for
-        alphanumeric and punctuation, or can be explicitly specified in-line in
-        the message with curly braces containing the character code.
+        If text is specified, the lines will be centered horizontally and
+        vertically. Character codes will be inferred for alphanumeric and
+        punctuation characters, or they can be explicitly specified using curly
+        braces containing the character code (such as ``{5}`` or ``{65}``).
 
-        :raises ValueError: if `message` is a list with unsupported dimensions
+        :raises ValueError: if ``message`` is a list with unsupported dimensions
         """
         data: Dict[str, Union[str, Rows]]
         if isinstance(message, str):
@@ -223,7 +223,7 @@ class LocalClient:
         `message` must be a two-dimensional (6, 22) array of character codes
         representing the exact positions of characters on the board.
 
-        :raises ValueError: if `message` is a list with unsupported dimensions
+        :raises ValueError: if ``message`` is a list with unsupported dimensions
         """
         if not self.enabled:
             raise RuntimeError("Local API has not been enabled")
