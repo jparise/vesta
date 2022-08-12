@@ -3,6 +3,7 @@
 ## 0.8.0 - unreleased
 ### Added
 - `LocalClient` provides a client interface to Vestaboard's Local API.
+- `ReadWriteClient` provides a client interface to Vestaboard's Read / Write API.
 
 ### Changed
 - The documentation now uses the [Furo theme](https://github.com/pradyunsg/furo).

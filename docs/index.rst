@@ -42,6 +42,21 @@ a Vestaboard over the local network using `Vestaboard's Local API
 .. autoclass:: vesta.LocalClient
     :members:
 
+``ReadWriteClient``
+-------------------
+
+:py:class:`vesta.ReadWriteClient` provides a client interface for interacting
+with a Vestaboard using the `Read / Write API <https://docs.vestaboard.com/read-write>`_.
+
+.. important::
+
+    A Read / Write API key is required to read or write messages. This key is
+    obtained by enabling the Vestaboard's Read / Write API via the Settings
+    section of the mobile app or from the Developer section of the web app.
+
+.. autoclass:: vesta.ReadWriteClient
+    :members:
+
 Character Encoding
 ==================
 

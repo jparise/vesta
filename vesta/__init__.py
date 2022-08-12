@@ -5,6 +5,7 @@ from .chars import encode_text
 from .chars import pprint
 from .clients import Client
 from .clients import LocalClient
+from .clients import ReadWriteClient
 
 __all__ = (
     "Color",
@@ -14,6 +15,7 @@ __all__ = (
     "pprint",
     "Client",
     "LocalClient",
+    "ReadWriteClient",
 )
 
 __version__ = "0.8.0"

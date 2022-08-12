@@ -77,6 +77,25 @@ assert local_client.write_message(message)
 assert local_client.read_message() == message
 ```
 
+#### `ReadWriteClient`
+
+`ReadWriteClient` provides a client interface for interacting with a Vestaboard
+using the [Read / Write API](https://docs.vestaboard.com/read-write).
+
+Note that Vestaboard owners must first obtain their Read / Write API key by
+enabling the Vestaboard's Read / Write API via the Settings section of the
+mobile app or from the Developer section of the web app.
+
+```py
+import vesta
+rw_client = vesta.ReadWriteClient("read_write_key")
+
+# Once enabled, you can write and read messages:
+message = vesta.encode("{67} Hello, World {68}")
+assert rw_client.write_message(message)
+assert rw_client.read_message() == message
+```
+
 ### Character Encoding
 
 All Vestaboard characters (letters, numbers, symbols, and colors) are encoded
