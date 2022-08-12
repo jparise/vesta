@@ -43,6 +43,15 @@ Row = List[int]
 Rows = List[Row]
 
 
+def validate_rows(rows: Rows) -> None:
+    """Check if ``rows`` is a well-formed grid of character codes.
+
+    :raises ValueError: if ``rows`` does not have the correct dimensions
+    """
+    if len(rows) != ROWS or not all(len(row) == COLS for row in rows):
+        raise ValueError(f"expected a ({ROWS}, {COLS}) array of encoded characters")
+
+
 class Color(enum.IntEnum):
     """Color chips"""
 
