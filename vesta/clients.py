@@ -31,9 +31,8 @@ from urllib.parse import urljoin
 
 import requests
 
-from .chars import COLS
-from .chars import ROWS
 from .chars import Rows
+from .chars import validate_rows
 
 __all__ = ["Client", "LocalClient"]
 
@@ -121,10 +120,7 @@ class Client:
         if isinstance(message, str):
             data = {"text": message}
         elif isinstance(message, list):
-            if len(message) != ROWS or not all(len(row) == COLS for row in message):
-                raise ValueError(
-                    f"expected a ({ROWS}, {COLS}) array of encoded characters"
-                )
+            validate_rows(message)
             data = {"characters": message}
         else:
             raise TypeError(f"unsupported message type: {type(message)}")
@@ -227,8 +223,7 @@ class LocalClient:
         """
         if not self.enabled:
             raise RuntimeError("Local API has not been enabled")
-        if len(message) != ROWS or not all(len(row) == COLS for row in message):
-            raise ValueError(f"expected a ({ROWS}, {COLS}) array of encoded characters")
+        validate_rows(message)
         r = self.session.post("/local-api/message", json=message)
         r.raise_for_status()
         return r.status_code == requests.codes.CREATED
