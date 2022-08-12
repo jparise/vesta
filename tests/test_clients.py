@@ -5,6 +5,7 @@ from vesta.chars import COLS
 from vesta.chars import ROWS
 from vesta.clients import Client
 from vesta.clients import LocalClient
+from vesta.clients import ReadWriteClient
 
 
 @pytest.fixture
@@ -15,6 +16,11 @@ def client():
 @pytest.fixture
 def local_client():
     return LocalClient("key")
+
+
+@pytest.fixture
+def rw_client():
+    return ReadWriteClient("key")
 
 
 class TestClient:
@@ -160,3 +166,43 @@ class TestLocalClient:
     def test_write_message_dimensions(self, local_client: LocalClient):
         with pytest.raises(ValueError, match=rf"expected a \({ROWS}, {COLS}\) array"):
             local_client.write_message([])
+
+
+class TestReadWriteClient:
+    def test_base_url(self):
+        base_url = "http://example.local"
+        rw_client = ReadWriteClient("key", base_url=base_url)
+        assert rw_client.session.base_url == base_url
+        assert base_url in repr(rw_client)
+
+    def test_headers(self):
+        client = ReadWriteClient("key", headers={"User-Agent": "Vesta"})
+        assert client.session.headers["X-Vestaboard-Read-Write-Key"] == "key"
+        assert client.session.headers["User-Agent"] == "Vesta"
+
+    def test_read_message(self, rw_client: ReadWriteClient, requests_mock: Mocker):
+        chars = [[0] * COLS] * ROWS
+        requests_mock.get(
+            "https://rw.vestaboard.com",
+            json={"currentMessage": {"layout": chars}},
+        )
+        message = rw_client.read_message()
+        assert message == chars
+
+    def test_read_message_empty(
+        self, rw_client: ReadWriteClient, requests_mock: Mocker
+    ):
+        requests_mock.get("https://rw.vestaboard.com")
+        message = rw_client.read_message()
+        assert message is None
+
+    def test_write_message(self, rw_client: ReadWriteClient, requests_mock: Mocker):
+        chars = [[0] * COLS] * ROWS
+        requests_mock.post("https://rw.vestaboard.com", status_code=201)
+        assert rw_client.write_message(chars)
+        assert requests_mock.last_request
+        assert requests_mock.last_request.json() == chars
+
+    def test_write_message_dimensions(self, rw_client: ReadWriteClient):
+        with pytest.raises(ValueError, match=rf"expected a \({ROWS}, {COLS}\) array"):
+            rw_client.write_message([])

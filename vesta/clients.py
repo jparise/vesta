@@ -72,12 +72,8 @@ class Client:
         headers: Optional[Mapping[str, str]] = None,
     ):
         self.session = Session(base_url)
-        self.session.headers.update(
-            {
-                "X-Vestaboard-Api-Key": api_key,
-                "X-Vestaboard-Api-Secret": api_secret,
-            }
-        )
+        self.session.headers["X-Vestaboard-Api-Key"] = api_key
+        self.session.headers["X-Vestaboard-Api-Secret"] = api_secret
         if headers:
             self.session.headers.update(headers)
 
@@ -225,5 +221,56 @@ class LocalClient:
             raise RuntimeError("Local API has not been enabled")
         validate_rows(message)
         r = self.session.post("/local-api/message", json=message)
+        r.raise_for_status()
+        return r.status_code == requests.codes.CREATED
+
+
+class ReadWriteClient:
+    """Provides a Vestaboard Read / Write API client interface.
+
+    A Read / Write API key is required to read or write messages. This key is
+    obtained by enabling the Vestaboard's Read / Write API via the Settings
+    section of the mobile app or from the Developer section of the web app.
+
+    Optionally, an alternate ``base_url`` can be specified, as well as any
+    additional HTTP ``headers`` that should be sent with every request
+    (such as a custom `User-Agent` header).
+
+    .. versionadded:: 0.8.0
+    """
+
+    def __init__(
+        self,
+        read_write_key: str,
+        base_url: str = "https://rw.vestaboard.com/",
+        headers: Optional[Mapping[str, str]] = None,
+    ):
+        self.session = Session(base_url)
+        self.session.headers["X-Vestaboard-Read-Write-Key"] = read_write_key
+        if headers:
+            self.session.headers.update(headers)
+
+    def __repr__(self):
+        return f"{type(self).__name__}(base_url={self.session.base_url!r})"
+
+    def read_message(self) -> Optional[Rows]:
+        """Read the Vestaboard's current message."""
+        r = self.session.get("")
+        r.raise_for_status()
+        try:
+            return r.json().get("currentMessage", {}).get("layout")
+        except requests.JSONDecodeError:
+            return None
+
+    def write_message(self, message: Rows) -> bool:
+        """Write a message to the Vestaboard.
+
+        `message` must be a two-dimensional (6, 22) array of character codes
+        representing the exact positions of characters on the board.
+
+        :raises ValueError: if ``message`` is a list with unsupported dimensions
+        """
+        validate_rows(message)
+        r = self.session.post("", json=message)
         r.raise_for_status()
         return r.status_code == requests.codes.CREATED
