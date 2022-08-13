@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.0 - unreleased
+## 0.8.0 - 2022-08-13
 ### Added
 - `LocalClient` provides a client interface to Vestaboard's Local API.
 - `ReadWriteClient` provides a client interface to Vestaboard's Read / Write API.
