@@ -34,7 +34,7 @@ import requests
 from .chars import Rows
 from .chars import validate_rows
 
-__all__ = ["Client", "LocalClient"]
+__all__ = ["Client", "LocalClient", "ReadWriteClient"]
 
 
 class Session(requests.Session):
