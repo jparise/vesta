@@ -11,11 +11,11 @@ Vesta requires Python 3.7 or later. It can be installed [via PyPI][pypi]:
 $ python -m pip install vesta
 ```
 
-Its only runtime dependency is the [Requests library][requests], which will be
+Its only runtime dependency is the [HTTPX library][httpx], which will be
 installed automatically.
 
 [pypi]: https://pypi.org/project/vesta/
-[requests]: https://requests.readthedocs.io/
+[httpx]: https://www.python-httpx.org/
 
 ## Usage
 
