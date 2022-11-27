@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any
 from typing import Dict
 from typing import List
@@ -27,30 +28,13 @@ from typing import Mapping
 from typing import Optional
 from typing import Union
 from typing import cast
-from urllib.parse import urljoin
 
-import requests
+import httpx
 
 from .chars import Rows
 from .chars import validate_rows
 
 __all__ = ["Client", "LocalClient", "ReadWriteClient"]
-
-
-class Session(requests.Session):
-    def __init__(self, base_url: str):
-        super().__init__()
-        self.base_url = base_url
-
-    def request(
-        self,
-        method: Union[str, bytes],
-        url: Union[str, bytes],
-        *args,
-        **kwargs,
-    ) -> requests.Response:
-        url = urljoin(self.base_url, url if isinstance(url, str) else url.decode())
-        return super().request(method, url, *args, **kwargs)
 
 
 class Client:
@@ -71,24 +55,28 @@ class Client:
         base_url: str = "https://platform.vestaboard.com",
         headers: Optional[Mapping[str, str]] = None,
     ):
-        self.session = Session(base_url)
-        self.session.headers["X-Vestaboard-Api-Key"] = api_key
-        self.session.headers["X-Vestaboard-Api-Secret"] = api_secret
+        self.http = httpx.Client(
+            headers={
+                "X-Vestaboard-Api-Key": api_key,
+                "X-Vestaboard-Api-Secret": api_secret,
+            },
+            base_url=base_url,
+        )
         if headers:
-            self.session.headers.update(headers)
+            self.http.headers.update(headers)
 
     def __repr__(self):
-        return f"{type(self).__name__}(base_url={self.session.base_url!r})"
+        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
 
     def get_subscriptions(self) -> List[Dict[str, Any]]:
         """Lists all subscriptions to which the viewer has access."""
-        r = self.session.get("/subscriptions")
+        r = self.http.get("/subscriptions")
         r.raise_for_status()
         return r.json().get("subscriptions", [])
 
     def get_viewer(self) -> Dict[str, Any]:
         """Describes the currently authenticated viewer."""
-        r = self.session.get("/viewer")
+        r = self.http.get("/viewer")
         r.raise_for_status()
         return r.json()
 
@@ -121,7 +109,7 @@ class Client:
         else:
             raise TypeError(f"unsupported message type: {type(message)}")
 
-        r = self.session.post(
+        r = self.http.post(
             f"/subscriptions/{subscription_id}/message",
             json=data,
         )
@@ -151,24 +139,24 @@ class LocalClient:
         *,
         base_url: str = "http://vestaboard.local:7000",
     ):
-        self.session = Session(base_url)
+        self.http = httpx.Client(base_url=base_url)
         if local_api_key is not None:
             self.api_key = local_api_key
 
     def __repr__(self):
-        return f"{type(self).__name__}(base_url={self.session.base_url!r})"
+        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
 
     @property
     def api_key(self) -> Optional[str]:
         """The client's Local API key."""
         return cast(
             Optional[str],
-            self.session.headers.get("X-Vestaboard-Local-Api-Key"),
+            self.http.headers.get("X-Vestaboard-Local-Api-Key"),
         )
 
     @api_key.setter
     def api_key(self, value: str) -> None:
-        self.session.headers["X-Vestaboard-Local-Api-Key"] = value
+        self.http.headers["X-Vestaboard-Local-Api-Key"] = value
 
     @property
     def enabled(self) -> bool:
@@ -182,7 +170,7 @@ class LocalClient:
         If successful, the Vestaboard's Local API key will be returned and the
         client's :py:attr:`~api_key` property will be updated to the new value.
         """
-        r = self.session.post(
+        r = self.http.post(
             "/local-api/enablement",
             headers={"X-Vestaboard-Local-Api-Enablement-Token": enablement_token},
         )
@@ -190,7 +178,7 @@ class LocalClient:
 
         try:
             local_api_key = r.json().get("apiKey")
-        except requests.JSONDecodeError:
+        except json.JSONDecodeError:
             local_api_key = None
 
         if local_api_key:
@@ -202,11 +190,11 @@ class LocalClient:
         """Read the Vestaboard's current message."""
         if not self.enabled:
             raise RuntimeError("Local API has not been enabled")
-        r = self.session.get("/local-api/message")
+        r = self.http.get("/local-api/message")
         r.raise_for_status()
         try:
             return r.json().get("message")
-        except requests.JSONDecodeError:
+        except json.JSONDecodeError:
             return None
 
     def write_message(self, message: Rows) -> bool:
@@ -220,9 +208,9 @@ class LocalClient:
         if not self.enabled:
             raise RuntimeError("Local API has not been enabled")
         validate_rows(message)
-        r = self.session.post("/local-api/message", json=message)
+        r = self.http.post("/local-api/message", json=message)
         r.raise_for_status()
-        return r.status_code == requests.codes.CREATED
+        return r.status_code == httpx.codes.CREATED
 
 
 class ReadWriteClient:
@@ -245,21 +233,23 @@ class ReadWriteClient:
         base_url: str = "https://rw.vestaboard.com/",
         headers: Optional[Mapping[str, str]] = None,
     ):
-        self.session = Session(base_url)
-        self.session.headers["X-Vestaboard-Read-Write-Key"] = read_write_key
+        self.http = httpx.Client(
+            headers={"X-Vestaboard-Read-Write-Key": read_write_key},
+            base_url=base_url,
+        )
         if headers:
-            self.session.headers.update(headers)
+            self.http.headers.update(headers)
 
     def __repr__(self):
-        return f"{type(self).__name__}(base_url={self.session.base_url!r})"
+        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
 
     def read_message(self) -> Optional[Rows]:
         """Read the Vestaboard's current message."""
-        r = self.session.get("")
+        r = self.http.get("")
         r.raise_for_status()
         try:
             return r.json().get("currentMessage", {}).get("layout")
-        except requests.JSONDecodeError:
+        except json.JSONDecodeError:
             return None
 
     def write_message(self, message: Rows) -> bool:
@@ -271,6 +261,6 @@ class ReadWriteClient:
         :raises ValueError: if ``message`` is a list with unsupported dimensions
         """
         validate_rows(message)
-        r = self.session.post("", json=message)
+        r = self.http.post("", json=message)
         r.raise_for_status()
-        return r.status_code == requests.codes.CREATED
+        return r.status_code == httpx.codes.CREATED
