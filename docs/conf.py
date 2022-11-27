@@ -1,24 +1,16 @@
 import datetime
 import os
-import re
+import sys
 
+sys.path.insert(0, os.path.abspath(".."))
 
-def get_version(filename):
-    docsdir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(docsdir, filename)) as f:
-        version_file = f.read()
-    version_match = re.search(r"^__version__ = \"([^\"]*)\"", version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
-
+from vesta import __version__ as version
 
 # Project
 
 project = "Vesta"
 copyright = f"{datetime.date.today().year} Jon Parise"
 author = "Jon Parise"
-version = get_version("../vesta/__init__.py")
 release = version
 
 # General
