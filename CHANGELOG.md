@@ -1,8 +1,14 @@
 # Changelog
 
 ## 0.9.0 - Not yet released
+### Added
+- Added `Colors.BLANK` and `Colors.FILLED` color values.
+
 ### Changed
 - Switched to [HTTPX](https://www.python-httpx.org/) as the underlying HTTP library.
+- `Colors.BLACK` now uses the official "black" character code (70). Use `Colors.BLANK`
+  for character code 0 (previously used by `Colors.BLACK`).
+- The default "fill" color is now `Colors.BLANK` instead of `Colors.BLACK`.
 
 ### Removed
 - Dropped support for Python 3.7.

@@ -65,7 +65,7 @@ class Color(enum.IntEnum):
         return obj
 
     # fmt: off
-    BLACK   = (0,  "\033[0m")   # noqa: E221
+    BLANK   = (0,  "\033[0m")   # noqa: E221
     RED     = (63, "\033[31m")  # noqa: E221
     ORANGE  = (64, "\033[33m")  # noqa: E221
     YELLOW  = (65, "\033[93m")  # noqa: E221
@@ -73,6 +73,8 @@ class Color(enum.IntEnum):
     BLUE    = (67, "\033[94m")  # noqa: E221
     VIOLET  = (68, "\033[95m")  # noqa: E221
     WHITE   = (69, "\033[97m")  # noqa: E221
+    BLACK   = (70, "\033[0m")   # noqa: E221
+    FILLED  = (71, "\033[97m")  # noqa: E221
     # fmt: on
 
 
@@ -121,7 +123,7 @@ def encode(s: str) -> Row:
 def encode_row(
     s: str,
     align: Literal["left", "center", "right"] = "left",
-    fill: int = Color.BLACK,
+    fill: int = Color.BLANK,
 ) -> Row:
     """Encodes a string as a row of character codes.
 
@@ -152,7 +154,7 @@ def encode_text(
     align: Literal["left", "center", "right"] = "left",
     valign: Optional[Literal["top", "middle", "bottom"]] = "top",
     margin: int = 0,
-    fill: int = Color.BLACK,
+    fill: int = Color.BLANK,
     breaks: Container[int] = frozenset({0}),
 ) -> Rows:
     """Encodes a string of text into rows of character codes.
