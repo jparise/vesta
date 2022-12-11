@@ -50,7 +50,7 @@ class TestEncodeRow:
 
     def test_unknown_alignment(self):
         with pytest.raises(ValueError, match="unknown alignment"):
-            encode_row("a", align="unknown")
+            encode_row("a", align="unknown")  # type: ignore
 
     def test_fill(self):
         chars = [1, 2, 3] + [int(Color.GREEN)] * (COLS - 3)
@@ -152,10 +152,10 @@ class TestEncodeText:
 
     def test_unknown_alignments(self):
         with pytest.raises(ValueError, match="unknown alignment"):
-            encode_text("a", align="unknown")
+            encode_text("a", align="unknown")  # type: ignore
 
         with pytest.raises(ValueError, match="unknown vertical alignment"):
-            encode_text("a", valign="unknown")
+            encode_text("a", valign="unknown")  # type: ignore
 
     def test_maximum_rows(self):
         with pytest.raises(ValueError, match=f"results in {ROWS + 1} lines"):
