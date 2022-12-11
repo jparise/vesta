@@ -25,6 +25,7 @@ import math
 import sys
 from typing import Container
 from typing import List
+from typing import Literal
 from typing import Optional
 from typing import TextIO
 from typing import Tuple
@@ -117,7 +118,11 @@ def encode(s: str) -> Row:
     return out
 
 
-def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> Row:
+def encode_row(
+    s: str,
+    align: Literal["left", "center", "right"] = "left",
+    fill: int = Color.BLACK,
+) -> Row:
     """Encodes a string as a row of character codes.
 
     In addition to printable characters, the string can contain character code
@@ -144,8 +149,8 @@ def encode_row(s: str, align: str = "left", fill: int = Color.BLACK) -> Row:
 
 def encode_text(
     s: str,
-    align: str = "left",
-    valign: Optional[str] = "top",
+    align: Literal["left", "center", "right"] = "left",
+    valign: Optional[Literal["top", "middle", "bottom"]] = "top",
     margin: int = 0,
     fill: int = Color.BLACK,
     breaks: Container[int] = frozenset({0}),
