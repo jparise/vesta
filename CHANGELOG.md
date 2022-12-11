@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.0 - Not yet released
+## 0.9.0 - 2022-12-11
 ### Added
 - Added `Colors.BLANK` and `Colors.FILLED` color values.
 
