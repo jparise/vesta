@@ -72,7 +72,7 @@ local_api_key = local_client.enable(ENABLEMENT_TOKEN)
 assert local_client.enabled
 
 # Once enabled, you can write and read messages:
-message = vesta.encode("{67} Hello, World {68}")
+message = vesta.encode_text("{67} Hello, World {68}")
 assert local_client.write_message(message)
 assert local_client.read_message() == message
 ```
@@ -91,7 +91,7 @@ import vesta
 rw_client = vesta.ReadWriteClient("read_write_key")
 
 # Once enabled, you can write and read messages:
-message = vesta.encode("{67} Hello, World {68}")
+message = vesta.encode_text("{67} Hello, World {68}")
 assert rw_client.write_message(message)
 assert rw_client.read_message() == message
 ```
