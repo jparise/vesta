@@ -8,7 +8,7 @@ Python. It provides API clients and character encoding utilities.
 Installation
 ============
 
-Vesta requires Python 3.7 or later. It can be installed `via PyPI
+Vesta requires Python 3.8 or later. It can be installed `via PyPI
 <https://pypi.org/project/vesta/>`_::
 
     $ python -m pip install vesta

@@ -4,6 +4,9 @@
 ### Changed
 - Switched to [HTTPX](https://www.python-httpx.org/) as the underlying HTTP library.
 
+### Removed
+- Dropped support for Python 3.7.
+
 ## 0.8.0 - 2022-08-13
 ### Added
 - `LocalClient` provides a client interface to Vestaboard's Local API.
