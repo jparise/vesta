@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0 - 2023-06-06
+### Added
+- Added `max_rows` to `encode_text()` for controlling the maximum number of rows
+  that will be returned (defaulting to 6). It can be set to a lower value to
+  produce a partial board or 0 to support unlimited rows.
+
+### Changed
+- `encode_text()` no longer raises `ValueError` when the result exceeds the
+  maximum number of rows. Instead, the result is truncated to `max_rows`.
+
 ## 0.9.0 - 2022-12-11
 ### Added
 - Added `Color.BLANK` and `Color.FILLED` color values.
