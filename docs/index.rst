@@ -65,7 +65,7 @@ as integer `character codes <https://docs.vestaboard.com/characters>`_. Vesta
 includes some helpful routines for working with these character codes.
 
 .. automodule:: vesta.chars
-   :members: Row, Rows
+   :members: COLS, ROWS, Row, Rows
 
 .. autoclass:: vesta.Color
     :show-inheritance:

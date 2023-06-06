@@ -72,7 +72,7 @@ class TestClient:
         client.post_message("sub_id", chars)
 
     def test_post_message_list_dimensions(self, client: Client):
-        with pytest.raises(ValueError, match=rf"expected a \({ROWS}, {COLS}\) array"):
+        with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
             client.post_message("sub_id", [])
 
     def test_post_message_type(self, client: Client):
@@ -159,7 +159,7 @@ class TestLocalClient:
         assert respx_mock.calls.last.request.content == json.dumps(chars).encode()
 
     def test_write_message_dimensions(self, local_client: LocalClient):
-        with pytest.raises(ValueError, match=rf"expected a \({ROWS}, {COLS}\) array"):
+        with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
             local_client.write_message([])
 
 
@@ -198,5 +198,5 @@ class TestReadWriteClient:
         assert respx_mock.calls.last.request.content == json.dumps(chars).encode()
 
     def test_write_message_dimensions(self, rw_client: ReadWriteClient):
-        with pytest.raises(ValueError, match=rf"expected a \({ROWS}, {COLS}\) array"):
+        with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
             rw_client.write_message([])

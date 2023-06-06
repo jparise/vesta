@@ -157,9 +157,10 @@ class TestEncodeText:
         with pytest.raises(ValueError, match="unknown vertical alignment"):
             encode_text("a", valign="unknown")  # type: ignore
 
-    def test_maximum_rows(self):
-        with pytest.raises(ValueError, match=f"results in {ROWS + 1} lines"):
-            encode_text("a\n" * (ROWS + 1))
+    def test_max_rows(self):
+        assert len(encode_text("a\n" * (ROWS + 1))) == ROWS
+        assert len(encode_text("a\n" * 5, max_rows=4)) == 4
+        assert len(encode_text("a\n" * 10, max_rows=0)) == 10
 
     def test_margin(self):
         chars = [

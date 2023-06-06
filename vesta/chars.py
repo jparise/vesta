@@ -24,6 +24,7 @@ import enum
 import math
 import sys
 from typing import Container
+from typing import Final
 from typing import List
 from typing import Literal
 from typing import Optional
@@ -32,10 +33,14 @@ from typing import Tuple
 from typing import Union
 from typing import cast
 
-ROWS = 6
-COLS = 22
 PRINTABLE = " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$() - +&=;: '\"%,.  /? °"
 CHARMAP = {c: i for i, c in enumerate(PRINTABLE) if i == 0 or c != " "}
+
+#: The number of columns on a board.
+COLS: Final[int] = 22
+
+#: The number of rows on a board.
+ROWS: Final[int] = 6
 
 #: A row of character codes.
 Row = List[int]
@@ -50,7 +55,7 @@ def validate_rows(rows: Rows) -> None:
     :raises ValueError: if ``rows`` does not have the correct dimensions
     """
     if len(rows) != ROWS or not all(len(row) == COLS for row in rows):
-        raise ValueError(f"expected a ({ROWS}, {COLS}) array of encoded characters")
+        raise ValueError(f"expected a ({COLS}, {ROWS}) array of encoded characters")
 
 
 class Color(enum.IntEnum):
@@ -153,6 +158,7 @@ def encode_text(
     s: str,
     align: Literal["left", "center", "right"] = "left",
     valign: Optional[Literal["top", "middle", "bottom"]] = "top",
+    max_rows: int = ROWS,
     margin: int = 0,
     fill: int = Color.BLANK,
     breaks: Container[int] = frozenset({0}),
@@ -164,8 +170,12 @@ def encode_text(
 
     ``align`` controls the text's alignment within the row: `left`, `right`, or
     `center`. ``valign`` controls the text's vertical alignment within the full
-    board: `top`, `middle`, `bottom`, or None (to never add rows, potentially
-    resulting in a partial board).
+    board (up to ``max_rows``): `top`, `middle`, `bottom`, or None (to never add
+    rows, potentially resulting in a partial board).
+
+    ``max_rows`` determines the maximum number of rows that will be returned,
+    potentially truncating the result. When ``max_rows`` is zero, the row count
+    is unlimited.
 
     ``margin`` specifies the width (in columns) of the left and right margins.
     The ``fill`` character code (generally a :py:class:`Color`) is used to fill
@@ -178,9 +188,7 @@ def encode_text(
     cannot be found, the line will be broken at the column limit (potentially
     mid-"word").
 
-    :raises ValueError: if the string contains unsupported characters or codes,
-                        or if the resulting encoding sequence would exceed the
-                        maximum number of supported rows
+    :raises ValueError: if the string contains unsupported characters or codes
 
     >>> encode_text('multiple\\nlines\\nof\\ntext', align="center", valign="middle")
     ... # doctest: +NORMALIZE_WHITESPACE
@@ -210,20 +218,23 @@ def encode_text(
 
         rows.append(_format_row(line, align, margin, fill))
 
+    if max_rows < 1:  # unlimited rows
+        return rows
+
     nrows = len(rows)
-    if nrows < ROWS and valign is not None:
+    if nrows < max_rows and valign is not None:
         empty = [fill] * COLS
         if valign == "top":
-            rows += [empty] * (ROWS - nrows)
+            rows += [empty] * (max_rows - nrows)
         elif valign == "bottom":
-            rows = [empty] * (ROWS - nrows) + rows
+            rows = [empty] * (max_rows - nrows) + rows
         elif valign == "middle":
-            pad = (ROWS - nrows) / 2
+            pad = (max_rows - nrows) / 2
             rows = [empty] * math.floor(pad) + rows + [empty] * math.ceil(pad)
         else:
             raise ValueError(f"unknown vertical alignment: {valign}")
-    elif nrows > ROWS:
-        raise ValueError(f"{s!r} results in {nrows} lines (max {ROWS})")
+    elif nrows > max_rows:
+        rows = rows[:max_rows]
 
     return rows
 
