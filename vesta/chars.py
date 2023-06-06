@@ -218,21 +218,23 @@ def encode_text(
 
         rows.append(_format_row(line, align, margin, fill))
 
-    if max_rows > 0:
-        nrows = len(rows)
-        if nrows < max_rows and valign is not None:
-            empty = [fill] * COLS
-            if valign == "top":
-                rows += [empty] * (max_rows - nrows)
-            elif valign == "bottom":
-                rows = [empty] * (max_rows - nrows) + rows
-            elif valign == "middle":
-                pad = (max_rows - nrows) / 2
-                rows = [empty] * math.floor(pad) + rows + [empty] * math.ceil(pad)
-            else:
-                raise ValueError(f"unknown vertical alignment: {valign}")
-        elif nrows > max_rows:
-            rows = rows[:max_rows]
+    if max_rows < 1:  # unlimited rows
+        return rows
+
+    nrows = len(rows)
+    if nrows < max_rows and valign is not None:
+        empty = [fill] * COLS
+        if valign == "top":
+            rows += [empty] * (max_rows - nrows)
+        elif valign == "bottom":
+            rows = [empty] * (max_rows - nrows) + rows
+        elif valign == "middle":
+            pad = (max_rows - nrows) / 2
+            rows = [empty] * math.floor(pad) + rows + [empty] * math.ceil(pad)
+        else:
+            raise ValueError(f"unknown vertical alignment: {valign}")
+    elif nrows > max_rows:
+        rows = rows[:max_rows]
 
     return rows
 
