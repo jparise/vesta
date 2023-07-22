@@ -190,13 +190,26 @@ class TestReadWriteClient:
         message = rw_client.read_message()
         assert message is None
 
-    def test_write_message(self, rw_client: ReadWriteClient, respx_mock: MockRouter):
+    def test_write_message_text(
+        self, rw_client: ReadWriteClient, respx_mock: MockRouter
+    ):
+        text = "abc"
+        respx_mock.post("https://rw.vestaboard.com/").respond(200)
+        rw_client.write_message(text)
+
+    def test_write_message_list(
+        self, rw_client: ReadWriteClient, respx_mock: MockRouter
+    ):
         chars = [[0] * COLS] * ROWS
-        respx_mock.post("https://rw.vestaboard.com/").respond(201)
+        respx_mock.post("https://rw.vestaboard.com/").respond(200)
         assert rw_client.write_message(chars)
         assert respx_mock.calls.called
         assert respx_mock.calls.last.request.content == json.dumps(chars).encode()
 
-    def test_write_message_dimensions(self, rw_client: ReadWriteClient):
+    def test_write_message_list_dimensions(self, rw_client: ReadWriteClient):
         with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
             rw_client.write_message([])
+
+    def test_write_message_type(self, rw_client: ReadWriteClient):
+        with pytest.raises(TypeError, match=r"unsupported message type"):
+            rw_client.write_message(True)  # type: ignore
