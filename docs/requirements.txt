@@ -1,2 +1,3 @@
 Sphinx==7.0.1
 furo==2023.5.20
+sphinxext-opengraph==0.8.2
