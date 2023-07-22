@@ -178,7 +178,7 @@ class TestReadWriteClient:
     def test_read_message(self, rw_client: ReadWriteClient, respx_mock: MockRouter):
         chars = [[0] * COLS] * ROWS
         respx_mock.get("https://rw.vestaboard.com/").respond(
-            json={"currentMessage": {"layout": chars}},
+            json={"currentMessage": {"layout": json.dumps(chars)}},
         )
         message = rw_client.read_message()
         assert message == chars

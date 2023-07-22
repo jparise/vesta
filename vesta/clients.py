@@ -248,9 +248,12 @@ class ReadWriteClient:
         r = self.http.get("")
         r.raise_for_status()
         try:
-            return r.json().get("currentMessage", {}).get("layout")
+            layout = r.json().get("currentMessage", {}).get("layout")
         except json.JSONDecodeError:
             return None
+        if layout:
+            return json.loads(layout)
+        return None
 
     def write_message(self, message: Rows) -> bool:
         """Write a message to the Vestaboard.
