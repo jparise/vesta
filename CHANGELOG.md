@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.1 - 2023-07-22
+## Added
+- Added text message support to `ReadWriteClient.write_message()`.
+
+## Fixed
+- `ReadWriteClient.get_message()` now correctly returns a `Rows` value rather
+  than a JSON-encoded string.
+
 ## 0.10.0 - 2023-06-06
 ### Added
 - Added `max_rows` to `encode_text()` for controlling the maximum number of rows
