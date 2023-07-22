@@ -1,10 +1,10 @@
 # Changelog
 
 ## 0.10.1 - 2023-07-22
-## Added
+### Added
 - Added text message support to `ReadWriteClient.write_message()`.
 
-## Fixed
+### Fixed
 - `ReadWriteClient.get_message()` now correctly returns a `Rows` value rather
   than a JSON-encoded string.
 
