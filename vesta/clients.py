@@ -255,15 +255,29 @@ class ReadWriteClient:
             return json.loads(layout)
         return None
 
-    def write_message(self, message: Rows) -> bool:
+    def write_message(self, message: Union[str, Rows]) -> bool:
         """Write a message to the Vestaboard.
 
-        `message` must be a two-dimensional (6, 22) array of character codes
-        representing the exact positions of characters on the board.
+        `message` can be either a string of text or a two-dimensional (6, 22)
+        array of character codes representing the exact positions of characters
+        on the board.
+
+        If text is specified, the lines will be centered horizontally and
+        vertically. Character codes will be inferred for alphanumeric and
+        punctuation characters, or they can be explicitly specified using curly
+        braces containing the character code (such as ``{5}`` or ``{65}``).
 
         :raises ValueError: if ``message`` is a list with unsupported dimensions
         """
-        validate_rows(message)
-        r = self.http.post("", json=message)
+        data: Union[Dict[str, str], Rows]
+        if isinstance(message, str):
+            data = {"text": message}
+        elif isinstance(message, list):
+            validate_rows(message)
+            data = message
+        else:
+            raise TypeError(f"unsupported message type: {type(message)}")
+
+        r = self.http.post("", json=data)
         r.raise_for_status()
-        return r.status_code == httpx.codes.CREATED
+        return r.is_success
