@@ -19,7 +19,6 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
-    "sphinxext.opengraph",
 ]
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
