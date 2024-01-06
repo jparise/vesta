@@ -36,7 +36,7 @@ jobs:
           isort --check --diff .
       - name: Typing
         run: |
-          python -m mypy -p vesta -p tests
+          python -m mypy
       - name: Tests
         run: |
-          python -m pytest -v --cov-config=setup.cfg
+          python -m pytest -v
