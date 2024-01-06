@@ -31,7 +31,6 @@ jobs:
           pip install -e .
       - name: Lint
         run: |
-          python setup.py check --strict
           flake8
           black --check --diff .
           isort --check --diff .

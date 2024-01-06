@@ -2,6 +2,45 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "vesta"
+dynamic = ["version"]
+description = "Vestaboard client library"
+authors = [
+    {name = "Jon Parise", email = "jon@indelible.org"},
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["vestaboard"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "httpx>=0.23.1",
+]
+requires-python = ">= 3.8"
+
+[project.urls]
+Homepage = "https://github.com/jparise/vesta"
+Documentation = "https://vesta-py.readthedocs.io/"
+Repository = "https://github.com/jparise/vesta.git"
+Issues = "https://github.com/jparise/vesta/issues"
+Changelog = "https://github.com/jparise/vesta/blob/main/CHANGELOG.md"
+
+[tool.setuptools.dynamic]
+version = {attr = "vesta.__version__"}
+
+[tool.setuptools.package-data]
+vesta = ["py.typed"]
+
 [tool.coverage.run]
 branch = true
 source = [
