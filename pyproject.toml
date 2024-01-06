@@ -38,15 +38,9 @@ Changelog = "https://github.com/jparise/vesta/blob/main/CHANGELOG.md"
 [tool.setuptools.dynamic]
 version = {attr = "vesta.__version__"}
 
-[tool.setuptools.package-data]
-vesta = ["py.typed"]
-
 [tool.coverage.run]
 branch = true
-source = [
-    "vesta",
-    "tests",
-]
+source = ["src"]
 
 [tool.isort]
 profile = "black"
@@ -54,11 +48,8 @@ force_single_line = true
 multi_line_output = 3
 
 [tool.mypy]
+packages = ["vesta", "tests"]
 python_version = 3.8
 
 [tool.pytest.ini_options]
 addopts = "--cov=vesta --cov-report=term-missing --doctest-modules"
-testpaths = [
-    "vesta",
-    "tests",
-]
