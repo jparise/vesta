@@ -54,7 +54,7 @@ code (such as `{5}` or `{65}`).
 #### `LocalClient`
 
 `LocalClient` provides a client interface for interacting with a Vestaboard
-over the local network using [Vestaboard's Local API](https://docs.vestaboard.com/local).
+over the local network using [Vestaboard's Local API](https://docs.vestaboard.com/docs/local-api/introduction).
 
 Note that Vestaboard owners must first request a
 [Local API enablement token](https://www.vestaboard.com/local-api)
@@ -80,7 +80,7 @@ assert local_client.read_message() == message
 #### `ReadWriteClient`
 
 `ReadWriteClient` provides a client interface for interacting with a Vestaboard
-using the [Read / Write API](https://docs.vestaboard.com/read-write).
+using the [Read / Write API](https://docs.vestaboard.com/docs/read-write-api/introduction).
 
 Note that Vestaboard owners must first obtain their Read / Write API key by
 enabling the Vestaboard's Read / Write API via the Settings section of the
@@ -99,8 +99,8 @@ assert rw_client.read_message() == message
 ### Character Encoding
 
 All Vestaboard characters (letters, numbers, symbols, and colors) are encoded
-as integer [character codes](https://docs.vestaboard.com/characters). Vesta
-includes some useful routines for working with these character codes.
+as integer [character codes](https://docs.vestaboard.com/docs/characterCodes).
+Vesta includes some useful routines for working with these character codes.
 
 `encode()` encodes a string as a list of character codes. In addition to
 printable characters, the string can contain character code sequences inside

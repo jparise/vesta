@@ -32,7 +32,7 @@ API Clients
 
 :py:class:`vesta.LocalClient` provides a client interface for interacting with
 a Vestaboard over the local network using `Vestaboard's Local API
-<https://docs.vestaboard.com/local>`_.
+<https://docs.vestaboard.com/docs/local-api/introduction>`_.
 
 .. important::
 
@@ -46,7 +46,8 @@ a Vestaboard over the local network using `Vestaboard's Local API
 -------------------
 
 :py:class:`vesta.ReadWriteClient` provides a client interface for interacting
-with a Vestaboard using the `Read / Write API <https://docs.vestaboard.com/read-write>`_.
+with a Vestaboard using the `Read / Write API
+<https://docs.vestaboard.com/docs/read-write-api/introduction>`_.
 
 .. important::
 
@@ -61,8 +62,8 @@ Character Encoding
 ==================
 
 All Vestaboard characters (letters, numbers, symbols, and colors) are encoded
-as integer `character codes <https://docs.vestaboard.com/characters>`_. Vesta
-includes some helpful routines for working with these character codes.
+as integer `character codes <https://docs.vestaboard.com/docs/characterCodes>`_.
+Vesta includes some helpful routines for working with these character codes.
 
 .. automodule:: vesta.chars
    :members: COLS, ROWS, Row, Rows
