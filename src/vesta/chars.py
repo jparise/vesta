@@ -70,16 +70,16 @@ class Color(enum.IntEnum):
         return obj
 
     # fmt: off
-    BLANK   = (0,  "\033[0m")   # noqa: E221
-    RED     = (63, "\033[31m")  # noqa: E221
-    ORANGE  = (64, "\033[33m")  # noqa: E221
-    YELLOW  = (65, "\033[93m")  # noqa: E221
-    GREEN   = (66, "\033[32m")  # noqa: E221
-    BLUE    = (67, "\033[94m")  # noqa: E221
-    VIOLET  = (68, "\033[95m")  # noqa: E221
-    WHITE   = (69, "\033[97m")  # noqa: E221
-    BLACK   = (70, "\033[0m")   # noqa: E221
-    FILLED  = (71, "\033[97m")  # noqa: E221
+    BLANK   = (0,  "\033[0m")
+    RED     = (63, "\033[31m")
+    ORANGE  = (64, "\033[33m")
+    YELLOW  = (65, "\033[93m")
+    GREEN   = (66, "\033[32m")
+    BLUE    = (67, "\033[94m")
+    VIOLET  = (68, "\033[95m")
+    WHITE   = (69, "\033[97m")
+    BLACK   = (70, "\033[0m")
+    FILLED  = (71, "\033[97m")
     # fmt: on
 
 
