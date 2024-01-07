@@ -29,9 +29,7 @@ jobs:
           pip install -e .[lint,test,typing]
       - name: Lint
         run: |
-          flake8
-          black --check --diff .
-          isort --check --diff .
+          ruff check --output-format=github
       - name: Typing
         run: |
           python -m mypy

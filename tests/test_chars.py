@@ -185,16 +185,16 @@ class TestEncodeText:
         assert encode_text("abc", align="left", fill=Color.GREEN) == chars
 
     def test_breaks(self):
+        # fmt: off
         chars = [
-            # fmt: off
             [23, 15, 18, 4, 0, 23, 15, 18, 4, 0, 23, 15, 18, 4, 0, 23, 15, 18, 4, 0, 0, 0],
             [23, 15, 18, 4, 0, 23, 15, 18, 4, 0, 23, 15, 18, 4, 0, 23, 15, 18, 4, 0, 0, 0],
             [23, 15, 18, 4, 0, 23, 15, 18, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            # fmt: on
         ]
+        # fmt: on
         assert encode_text(" ".join(["word"] * 10)) == chars
 
 
@@ -206,9 +206,7 @@ class TestPrint:
 
     def test_row(self):
         chars = encode_row("{63} Centered {63}", align="center")
-        assert self.pprint(chars) == (
-            "| | | | | |◼︎| |C|E|N|T|E|R|E|D| |◼︎| | | | | |\n"
-        )
+        assert self.pprint(chars) == ("| | | | | |◼︎| |C|E|N|T|E|R|E|D| |◼︎| | | | | |\n")
 
     def test_rows(self):
         chars = encode_text("{63} Centered {63}", align="center", valign="middle")
@@ -235,9 +233,7 @@ class TestPrint:
         output = io.StringIO()
         monkeypatch.setattr(output, "isatty", lambda: True)
         pprint([65], stream=output)
-        assert (
-            output.getvalue() == "\x1b[90m|\x1b[0m\x1b[93m◼︎\x1b[0m\x1b[90m|\x1b[0m\n"
-        )
+        assert output.getvalue() == "\x1b[90m|\x1b[0m\x1b[93m◼︎\x1b[0m\x1b[90m|\x1b[0m\n"
 
     def test_unknown_character_code(self):
         pytest.raises(ValueError, pprint, [99]).match("unknown character code: 99")
