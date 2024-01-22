@@ -58,6 +58,16 @@ with a Vestaboard using the `Read / Write API
 .. autoclass:: vesta.ReadWriteClient
     :members:
 
+``VBMLClient``
+--------------
+
+:py:class:`vesta.VBMLClient` provides a client interface for Vestaboard's
+`VBML (Vestaboard Markup Language) <https://docs.vestaboard.com/docs/vbml>`_
+API.
+
+.. autoclass:: vesta.VBMLClient
+    :members:
+
 Character Encoding
 ==================
 
@@ -79,3 +89,13 @@ Vesta includes some helpful routines for working with these character codes.
 .. autofunction:: vesta.encode_text
 
 .. autofunction:: vesta.pprint
+
+VBML
+====
+
+`VBML (Vestaboard Markup Language) <https://docs.vestaboard.com/docs/vbml>`_
+defines a language for composing static and dynamic messages.
+
+.. automodule:: vesta.vbml
+   :members:  Component, Props, Style
+   :member-order: groupwise

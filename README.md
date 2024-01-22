@@ -96,6 +96,26 @@ assert rw_client.write_message(message)
 assert rw_client.read_message() == message
 ```
 
+#### `VBMLClient`
+
+`VBMLClient` provides a client interface for Vestaboard's [VBML (Vestaboard
+Markup Language)](https://docs.vestaboard.com/docs/vbml) API.
+
+```py
+import vesta
+
+component = Component(
+    "Vestaboard Markup Language",
+    justify="center",
+    align="center",
+    width=22,
+    height=6,
+)
+
+vbml_client = vesta.VBMLClient()
+vesta.pprint(vbml_client.compose([component]))
+```
+
 ### Character Encoding
 
 All Vestaboard characters (letters, numbers, symbols, and colors) are encoded

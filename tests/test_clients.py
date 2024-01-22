@@ -10,6 +10,8 @@ from vesta.chars import ROWS
 from vesta.clients import Client
 from vesta.clients import LocalClient
 from vesta.clients import ReadWriteClient
+from vesta.clients import VBMLClient
+from vesta.vbml import Component
 
 if TYPE_CHECKING:
     from respx import MockRouter
@@ -28,6 +30,11 @@ def local_client():
 @pytest.fixture
 def rw_client():
     return ReadWriteClient("key")
+
+
+@pytest.fixture
+def vbml_client():
+    return VBMLClient()
 
 
 class TestClient:
@@ -222,3 +229,33 @@ class TestReadWriteClient:
     def test_write_message_type(self, rw_client: ReadWriteClient):
         with pytest.raises(TypeError, match=r"unsupported message type"):
             rw_client.write_message(True)  # type: ignore
+
+
+class TestVBMLClient:
+    def test_base_url(self):
+        base_url = "http://example.local"
+        client = VBMLClient(base_url=base_url)
+        assert client.http.base_url == base_url
+        assert base_url in repr(client)
+
+    def test_headers(self):
+        client = VBMLClient("key", headers={"User-Agent": "Vesta"})
+        assert client.http.headers["User-Agent"] == "Vesta"
+
+    def test_compose(self, vbml_client: VBMLClient, respx_mock: MockRouter):
+        chars = [[0] * COLS] * ROWS
+        respx_mock.post("https://vbml.vestaboard.com/compose").respond(json=chars)
+
+        component = Component("template")
+        props = {"prop": "value"}
+        assert vbml_client.compose([component], props=props) == chars
+        assert respx_mock.calls.called
+
+        assert json.loads(respx_mock.calls.last.request.content) == {
+            "components": [component.asdict()],
+            "props": props,
+        }
+
+    def test_component_no_components(self, vbml_client: VBMLClient):
+        with pytest.raises(ValueError, match=r"expected at least one component"):
+            vbml_client.compose([])

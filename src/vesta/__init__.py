@@ -6,6 +6,7 @@ from .chars import pprint
 from .clients import Client
 from .clients import LocalClient
 from .clients import ReadWriteClient
+from .clients import VBMLClient
 
 __all__ = (
     "Color",
@@ -16,6 +17,7 @@ __all__ = (
     "Client",
     "LocalClient",
     "ReadWriteClient",
+    "VBMLClient",
 )
 
-__version__ = "0.10.1"
+__version__ = "0.11.0-dev"

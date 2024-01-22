@@ -33,8 +33,10 @@ import httpx
 
 from .chars import Rows
 from .chars import validate_rows
+from .vbml import Component
+from .vbml import Props
 
-__all__ = ["Client", "LocalClient", "ReadWriteClient"]
+__all__ = ["Client", "LocalClient", "ReadWriteClient", "VBMLClient"]
 
 
 class Client:
@@ -281,3 +283,50 @@ class ReadWriteClient:
         r = self.http.post("", json=data)
         r.raise_for_status()
         return r.is_success
+
+
+class VBMLClient:
+    """Provides a VBML (Vestaboard Markup Language) API client interface.
+
+    .. versionadded:: 0.11.0
+    """
+
+    def __init__(
+        self,
+        base_url: str = "https://vbml.vestaboard.com/",
+        headers: Optional[Mapping[str, str]] = None,
+    ):
+        self.http = httpx.Client(
+            headers=headers,
+            base_url=base_url,
+        )
+
+    def __repr__(self):
+        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
+
+    def compose(
+        self,
+        components: List[Component],
+        props: Optional[Props] = None,
+    ) -> Rows:
+        """Composes one or more styled components into rows of character codes.
+
+        `props` can be a map of dynamic properties that will be injected into
+        the message templates using double bracket notation (``{{propName}}``).
+        A prop value *must* be provided if it is used in a template.
+
+        :returns: Rows of character codes representing the composed message
+        :raises ValueError: if no components are provided
+        """
+        if not components:
+            raise ValueError("expected at least one component")
+
+        data: Dict[str, Union[Props, List[Dict]]] = {
+            "components": [component.asdict() for component in components],
+        }
+        if props:
+            data["props"] = props
+
+        r = self.http.post("/compose", json=data)
+        r.raise_for_status()
+        return r.json()
