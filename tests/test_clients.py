@@ -190,6 +190,15 @@ class TestReadWriteClient:
         message = rw_client.read_message()
         assert message is None
 
+    def test_read_message_empty_layout(
+        self, rw_client: ReadWriteClient, respx_mock: MockRouter
+    ):
+        respx_mock.get("https://rw.vestaboard.com/").respond(
+            json={"currentMessage": {"layout": ""}},
+        )
+        message = rw_client.read_message()
+        assert message is None
+
     def test_write_message_text(
         self, rw_client: ReadWriteClient, respx_mock: MockRouter
     ):
