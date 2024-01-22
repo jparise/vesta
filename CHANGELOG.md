@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0 - Unreleased
+### Added
+- `VBMLClient` provides a client interface to Vestaboard's [VBML (Vestaboard
+  Markup Language)](https://docs.vestaboard.com/docs/vbml) API.
+- Added support for Python 3.12.
+
+### Changed
+- Switched to a `pyproject.toml`-based package configuration.
+
 ## 0.10.1 - 2023-07-22
 ### Added
 - Added text message support to `ReadWriteClient.write_message()`.
