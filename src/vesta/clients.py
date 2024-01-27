@@ -54,16 +54,14 @@ class Client:
         api_key: str,
         api_secret: str,
         *,
+        http_client: Optional[httpx.Client] = None,
         base_url: str = "https://platform.vestaboard.com",
         headers: Optional[Mapping[str, str]] = None,
     ):
-        self.http = httpx.Client(
-            headers={
-                "X-Vestaboard-Api-Key": api_key,
-                "X-Vestaboard-Api-Secret": api_secret,
-            },
-            base_url=base_url,
-        )
+        self.http = http_client or httpx.Client()
+        self.http.base_url = httpx.URL(base_url)
+        self.http.headers["X-Vestaboard-Api-Key"] = api_key
+        self.http.headers["X-Vestaboard-Api-Secret"] = api_secret
         if headers:
             self.http.headers.update(headers)
 
@@ -139,9 +137,11 @@ class LocalClient:
         self,
         local_api_key: Optional[str] = None,
         *,
+        http_client: Optional[httpx.Client] = None,
         base_url: str = "http://vestaboard.local:7000",
     ):
-        self.http = httpx.Client(base_url=base_url)
+        self.http = http_client or httpx.Client()
+        self.http.base_url = httpx.URL(base_url)
         if local_api_key is not None:
             self.api_key = local_api_key
 
@@ -232,13 +232,14 @@ class ReadWriteClient:
     def __init__(
         self,
         read_write_key: str,
+        *,
+        http_client: Optional[httpx.Client] = None,
         base_url: str = "https://rw.vestaboard.com/",
         headers: Optional[Mapping[str, str]] = None,
     ):
-        self.http = httpx.Client(
-            headers={"X-Vestaboard-Read-Write-Key": read_write_key},
-            base_url=base_url,
-        )
+        self.http = http_client or httpx.Client()
+        self.http.base_url = httpx.URL(base_url)
+        self.http.headers["X-Vestaboard-Read-Write-Key"] = read_write_key
         if headers:
             self.http.headers.update(headers)
 
@@ -293,13 +294,15 @@ class VBMLClient:
 
     def __init__(
         self,
+        *,
+        http_client: Optional[httpx.Client] = None,
         base_url: str = "https://vbml.vestaboard.com/",
         headers: Optional[Mapping[str, str]] = None,
     ):
-        self.http = httpx.Client(
-            headers=headers,
-            base_url=base_url,
-        )
+        self.http = http_client or httpx.Client()
+        self.http.base_url = httpx.URL(base_url)
+        if headers:
+            self.http.headers.update(headers)
 
     def __repr__(self):
         return f"{type(self).__name__}(base_url={self.http.base_url!r})"
