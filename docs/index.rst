@@ -5,6 +5,11 @@ Vesta
 Vesta is a `Vestaboard <https://www.vestaboard.com/>`_ client library for
 Python. It provides API clients and character encoding utilities.
 
+.. toctree::
+   :hidden:
+
+   changelog
+
 Installation
 ============
 
