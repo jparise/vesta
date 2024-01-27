@@ -239,7 +239,7 @@ class TestVBMLClient:
         assert base_url in repr(client)
 
     def test_headers(self):
-        client = VBMLClient("key", headers={"User-Agent": "Vesta"})
+        client = VBMLClient(headers={"User-Agent": "Vesta"})
         assert client.http.headers["User-Agent"] == "Vesta"
 
     def test_compose(self, vbml_client: VBMLClient, respx_mock: MockRouter):
