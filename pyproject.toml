@@ -74,5 +74,5 @@ src = ["src", "tests"]
 [tool.ruff.lint.isort]
 force-single-line = true
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/test_chars.py" = ["E501"]
