@@ -68,8 +68,10 @@ python_version = 3.8
 addopts = "--cov=vesta --cov-report=term-missing --doctest-modules"
 
 [tool.ruff]
-select = ["E", "F", "I", "RUF", "W"]
 src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "RUF", "W"]
 
 [tool.ruff.lint.isort]
 force-single-line = true
