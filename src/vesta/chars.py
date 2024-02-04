@@ -190,6 +190,9 @@ def encode_text(
     cannot be found, the line will be broken at the column limit (potentially
     mid-"word").
 
+    Line boundaries (as determined by :py:meth:`str.splitlines`) appearing in
+    the source string always result in line breaks.
+
     :raises ValueError: if the string contains unsupported characters or codes
 
     >>> encode_text('multiple\\nlines\\nof\\ntext', align="center", valign="middle")
