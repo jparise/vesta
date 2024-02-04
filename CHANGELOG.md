@@ -5,6 +5,9 @@
 - All clients now support a user-provided [httpx.Client](https://www.python-httpx.org/api/#client)
   objects.
 
+### Changed
+- The `encode_*()` functions now consistently specify keyword-only arguments.
+
 ## 0.11.0 - 2024-01-22
 ### Added
 - `VBMLClient` provides a client interface to Vestaboard's [VBML (Vestaboard
