@@ -127,6 +127,7 @@ def encode(s: str) -> Row:
 
 def encode_row(
     s: str,
+    *,
     align: Literal["left", "center", "right"] = "left",
     fill: int = Color.BLANK,
 ) -> Row:
@@ -156,6 +157,7 @@ def encode_row(
 
 def encode_text(
     s: str,
+    *,
     align: Literal["left", "center", "right"] = "left",
     valign: Optional[Literal["top", "middle", "bottom"]] = "top",
     max_rows: int = ROWS,
