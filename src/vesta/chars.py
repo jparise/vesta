@@ -208,6 +208,9 @@ def encode_text(
     max_cols = COLS - margin * 2
     rows: Rows = []
 
+    # Find a place to break the line at a `breaks` character that results in
+    # the longest row possible (up to `max_cols`). The result is a pair of
+    # positions: the end of the resulting row and the start of the remainder.
     def find_break(line: Row) -> Tuple[int, int]:
         end = min(len(line), max_cols)
         for pos in range(end, 0, -1):
