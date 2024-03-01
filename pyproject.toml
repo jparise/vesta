@@ -35,7 +35,7 @@ docs = [
     "sphinx_mdinclude==0.5.3",
 ]
 lint = [
-    "ruff==0.2.0",
+    "ruff==0.3.0",
 ]
 test = [
     "pytest==8.0.0",
