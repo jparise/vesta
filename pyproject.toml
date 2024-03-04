@@ -10,7 +10,7 @@ authors = [
     {name = "Jon Parise", email = "jon@indelible.org"},
 ]
 readme = "README.md"
-license = {file = "LICENSE"}
+license = {text = "MIT"}
 keywords = ["vestaboard"]
 classifiers = [
     "Development Status :: 4 - Beta",
