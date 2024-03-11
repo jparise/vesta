@@ -43,7 +43,7 @@ test = [
     "respx==0.20.1",
 ]
 typing = [
-    "mypy==1.8.0",
+    "mypy==1.9.0",
 ]
 
 [project.urls]
