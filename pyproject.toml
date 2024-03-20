@@ -40,7 +40,7 @@ lint = [
 test = [
     "pytest==8.1.0",
     "pytest-cov==4.1.0",
-    "respx==0.20.1",
+    "respx==0.21.0",
 ]
 typing = [
     "mypy==1.9.0",
