@@ -38,3 +38,9 @@ class TestComponent:
             "template": "template",
             "style": {"align": "top"},
         }
+
+    def test_absolute_position(self):
+        assert Component("template", absolute_position={"x": 1, "y": 2}).asdict() == {
+            "template": "template",
+            "style": {"absolutePosition": {"x": 1, "y": 2}},
+        }
