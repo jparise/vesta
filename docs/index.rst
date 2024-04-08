@@ -102,5 +102,5 @@ VBML
 defines a language for composing static and dynamic messages.
 
 .. automodule:: vesta.vbml
-   :members:  Component, Props, Style
+   :members:  Component, Position, Props, Style
    :member-order: groupwise

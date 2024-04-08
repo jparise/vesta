@@ -44,8 +44,8 @@ Alignment = Literal["top", "bottom", "center"]
 class Position(TypedDict):
     """A Position defines an absolute position on a board."""
 
-    x: int
-    y: int
+    x: int  #: X coordinate
+    y: int  #: Y coordinate
 
 
 class Style(TypedDict, total=False):
