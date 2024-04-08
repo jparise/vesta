@@ -38,6 +38,13 @@ Justification = Literal["left", "right", "center", "justified"]
 Alignment = Literal["top", "bottom", "center"]
 
 
+class Position(TypedDict):
+    """A Position defines an absolute position on a board."""
+
+    x: int
+    y: int
+
+
 class Style(TypedDict, total=False):
     """A Style defines a set of values that will be applied to a
     :py:class:`Component`.
@@ -54,6 +61,9 @@ class Style(TypedDict, total=False):
 
     #: The vertical alignment of a message. Defaults to ``top``.
     align: Alignment
+
+    #: An exact position on the board. Bounded by ``width`` and ``height``.
+    absolutePosition: Position
 
 
 # Component is defined as a simple class so that we can provide good typing and
@@ -79,7 +89,8 @@ class Component:
 
     A ``style`` dictionary can be provided. Individual :py:class:`Style` values
     can also be given as keyword arguments (``height``, ``width``, ``justify``,
-    ``align``), and they will override any values from the ``style`` dictionary.
+    ``align``, ``absolute_position``), and they will override any values from
+    the ``style`` dictionary.
     """
 
     __slots__ = ["template", "style"]
@@ -93,6 +104,7 @@ class Component:
         width: Optional[int] = None,
         justify: Optional[Justification] = None,
         align: Optional[Alignment] = None,
+        absolute_position: Optional[Position] = None,
     ):
         self.template = template
         self.style: Style = style or {}
@@ -104,6 +116,8 @@ class Component:
             self.style["justify"] = justify
         if align is not None:
             self.style["align"] = align
+        if absolute_position is not None:
+            self.style["absolutePosition"] = absolute_position
 
     def asdict(self) -> Dict:
         """Returns the component's JSON dictionary representation."""
