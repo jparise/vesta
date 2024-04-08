@@ -1,9 +1,21 @@
+import pytest
+
 from vesta.vbml import Component
 
 
 class TestComponent:
     def test_template(self):
         assert Component("template").asdict() == {"template": "template"}
+
+    def test_raw_characters(self):
+        assert Component(raw_characters=[]).asdict() == {"rawCharacters": []}
+
+    def test_template_and_raw_characters(self):
+        assert Component("t", raw_characters=[]).asdict() == {"rawCharacters": []}
+
+    def test_template_or_raw_characters_required(self):
+        with pytest.raises(ValueError, match="expected template or raw_characters"):
+            Component()
 
     def test_style(self):
         assert Component("template", style={}).asdict() == {"template": "template"}
