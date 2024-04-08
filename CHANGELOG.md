@@ -4,7 +4,8 @@
 ### Added
 - All clients now support a user-provided [httpx.Client](https://www.python-httpx.org/api/#client)
   objects.
-- Add support for the VBML `absolutePosition` style.
+- Added support for the VBML `absolutePosition` style.
+- Added support for the VBML `rawCharacters` component field.
 
 ### Changed
 - The `encode_*()` functions now consistently specify keyword-only arguments.

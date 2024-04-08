@@ -20,11 +20,14 @@
 
 from __future__ import annotations
 
+from typing import Any
 from typing import Dict
 from typing import Literal
 from typing import Mapping
 from typing import Optional
 from typing import TypedDict
+
+from .chars import Rows
 
 __all__ = ["Component", "Props", "Style"]
 
@@ -87,17 +90,22 @@ class Component:
     will be cast to uppercase. A new row can be forced by inserting a newline
     (``\\n``) sequence.
 
+    Alternatively, a ``raw_characters`` character array can be provided to set
+    the initial (background) state of the component. ``raw_characters`` takes
+    precedence over ``template``.
+
     A ``style`` dictionary can be provided. Individual :py:class:`Style` values
     can also be given as keyword arguments (``height``, ``width``, ``justify``,
     ``align``, ``absolute_position``), and they will override any values from
     the ``style`` dictionary.
     """
 
-    __slots__ = ["template", "style"]
+    __slots__ = ["template", "raw_characters", "style"]
 
     def __init__(
         self,
-        template: str,
+        template: Optional[str] = None,
+        raw_characters: Optional[Rows] = None,
         style: Optional[Style] = None,
         *,
         height: Optional[int] = None,
@@ -106,7 +114,11 @@ class Component:
         align: Optional[Alignment] = None,
         absolute_position: Optional[Position] = None,
     ):
+        if not (template is not None or raw_characters is not None):
+            raise ValueError("expected template or raw_characters")
+
         self.template = template
+        self.raw_characters = raw_characters
         self.style: Style = style or {}
         if height is not None:
             self.style["height"] = height
@@ -119,8 +131,13 @@ class Component:
         if absolute_position is not None:
             self.style["absolutePosition"] = absolute_position
 
-    def asdict(self) -> Dict:
+    def asdict(self) -> Dict[str, Any]:
         """Returns the component's JSON dictionary representation."""
-        if not self.style:
-            return {"template": self.template}
-        return {"template": self.template, "style": self.style}
+        d: Dict[str, Any] = {}
+        if self.raw_characters is not None:
+            d["rawCharacters"] = self.raw_characters
+        elif self.template is not None:
+            d["template"] = self.template
+        if self.style:
+            d["style"] = self.style
+        return d
