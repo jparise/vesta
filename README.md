@@ -49,6 +49,14 @@ Note that an API secret and key is required to get subscriptions or send
 messages. These credentials can be created from the [Developer section of the
 web app](https://web.vestaboard.com/).
 
+Messages can be posted as either text strings or two-dimensional arrays of
+character codes representing the exact positions of characters on the board.
+
+If text is specified, the lines will be centered horizontally and vertically.
+Character codes will be inferred for alphanumeric and punctuation characters,
+or they can be explicitly specified using curly braces containing the character
+code (such as `{5}` or `{65}`).
+
 ```py
 import vesta
 subscription_client = vesta.SubscriptionClient("api_key", "api_secret")
@@ -114,16 +122,6 @@ This is the original Vestaboard Platform API. It is **deprecated** and has been
 superseded by the other APIs listed above. In particular, Vestaboard encourages
 users of the Platform API to switch to the [Subscription API](#subscription-api),
 which offers nearly identical functionality.
-
-### Messages
-
-Messages can be posted as either text strings or two-dimensional arrays of
-character codes representing the exact positions of characters on the board.
-
-If text is specified, the lines will be centered horizontally and vertically.
-Character codes will be inferred for alphanumeric and punctuation characters,
-or they can be explicitly specified using curly braces containing the character
-code (such as `{5}` or `{65}`).
 
 ### Character Encoding
 
