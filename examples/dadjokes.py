@@ -55,7 +55,7 @@ def main(args: argparse.Namespace):
         level=logging.INFO,
     )
 
-    client = vesta.Client(args.key, args.secret)
+    client = vesta.SubscriptionClient(args.key, args.secret)
 
     jokes = fetch_jokes(args.count)
     logging.info("Loaded %d jokes", len(jokes))
@@ -81,7 +81,7 @@ def main(args: argparse.Namespace):
             vesta.pprint(chars)
 
         try:
-            client.post_message(args.sub, chars)
+            client.send_message(args.sub, chars)
         except httpx.HTTPStatusError as e:
             logging.error(e)
             time.sleep(60)

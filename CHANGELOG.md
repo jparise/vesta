@@ -9,6 +9,9 @@
 
 ### Changed
 - The `encode_*()` functions now consistently specify keyword-only arguments.
+- Vestaboard has deprecated the Platform API, so our `Client` interface is also
+  considered deprecated. Switch to `SubscriptionClient`, which offers nearly
+  identical functionality.
 
 ## 0.11.0 - 2024-01-22
 ### Added
