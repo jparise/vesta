@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import json
+import warnings
 from typing import Any
 from typing import Dict
 from typing import List
@@ -60,6 +61,12 @@ class Client:
         base_url: str = "https://platform.vestaboard.com",
         headers: Optional[Mapping[str, str]] = None,
     ):
+        warnings.warn(
+            "Vestaboard has deprecated the Platform API (Client). "
+            "Consider using the Subscription API (SubscrptionClient) instead.",
+            DeprecationWarning,
+        )
+
         self.http = http_client or httpx.Client()
         self.http.base_url = httpx.URL(base_url)
         self.http.headers["X-Vestaboard-Api-Key"] = api_key

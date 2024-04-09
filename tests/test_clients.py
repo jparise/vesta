@@ -43,6 +43,7 @@ def vbml_client():
     return VBMLClient()
 
 
+@pytest.mark.filterwarnings("ignore:Vestaboard has deprecated the Platform API")
 class TestClient:
     def test_base_url(self):
         base_url = "https://www.example.com"
