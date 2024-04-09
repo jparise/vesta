@@ -26,29 +26,8 @@ installed automatically.
 API Clients
 ===========
 
-``Client``
-----------
-
-.. autoclass:: vesta.Client
-    :members:
-
-``LocalClient``
----------------
-
-:py:class:`vesta.LocalClient` provides a client interface for interacting with
-a Vestaboard over the local network using `Vestaboard's Local API
-<https://docs.vestaboard.com/docs/local-api/introduction>`_.
-
-.. important::
-
-    Vestaboard owners must first request a `Local API enablement token
-    <https://www.vestaboard.com/local-api>`_ in order to use the Local API.
-
-.. autoclass:: vesta.LocalClient
-    :members:
-
-``ReadWriteClient``
--------------------
+Read / Write API
+----------------
 
 :py:class:`vesta.ReadWriteClient` provides a client interface for interacting
 with a Vestaboard using the `Read / Write API
@@ -64,8 +43,8 @@ with a Vestaboard using the `Read / Write API
 .. autoclass:: vesta.ReadWriteClient
     :members:
 
-``SubscriptionClient``
-----------------------
+Subscription API
+----------------
 
 :py:class:`vesta.SubscriptionClient` provides a client interface for interacting
 with multiple Vestaboards using the `Subscription API
@@ -80,14 +59,45 @@ with multiple Vestaboards using the `Subscription API
 .. autoclass:: vesta.SubscriptionClient
     :members:
 
-``VBMLClient``
---------------
+Local API
+---------
+
+:py:class:`vesta.LocalClient` provides a client interface for interacting with
+a Vestaboard over the local network using `Vestaboard's Local API
+<https://docs.vestaboard.com/docs/local-api/introduction>`_.
+
+.. important::
+
+    Vestaboard owners must first request a `Local API enablement token
+    <https://www.vestaboard.com/local-api>`_ in order to use the Local API.
+
+.. autoclass:: vesta.LocalClient
+    :members:
+
+VBML API
+--------
 
 :py:class:`vesta.VBMLClient` provides a client interface for Vestaboard's
 `VBML (Vestaboard Markup Language) <https://docs.vestaboard.com/docs/vbml>`_
 API.
 
 .. autoclass:: vesta.VBMLClient
+    :members:
+
+Platform API
+------------
+
+:py:class:`vesta.Client` provides a client interface for interacting with the
+**deprecated** `Vestaboard Platform API <https://docs-v1.vestaboard.com/introduction>`_.
+
+.. warning::
+
+    This is the original Vestaboard Platform API. It is **deprecated** and has
+    been superseded by the other APIs listed above. In particular, Vestaboard
+    encourages users of the Platform API to switch to the Subscription API,
+    which offers nearly identical functionality.
+
+.. autoclass:: vesta.Client
     :members:
 
 Character Encoding

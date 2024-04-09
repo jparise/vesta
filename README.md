@@ -21,37 +21,45 @@ installed automatically.
 
 ### API Clients
 
-#### `Client`
+#### Read / Write API
 
-The `Client` type is initialized with an API key and secret:
+`ReadWriteClient` provides a client interface for interacting with a Vestaboard
+using the [Read / Write API](https://docs.vestaboard.com/docs/read-write-api/introduction).
 
-```pycon
->>> import vesta
->>> client = vesta.Client(API_KEY, API_SECRET)
+Note that Vestaboard owners must first obtain their Read / Write API key by
+enabling the Vestaboard's Read / Write API via the Settings section of the
+mobile app or from the Developer section of the web app.
+
+```py
+import vesta
+rw_client = vesta.ReadWriteClient("read_write_key")
+
+# Once enabled, you can write and read messages:
+message = vesta.encode_text("{67} Hello, World {68}")
+assert rw_client.write_message(message)
+assert rw_client.read_message() == message
 ```
 
-Then, you can make API calls using one of the provided methods:
+#### Subscription API
 
-```pycon
->>> client.get_viewer()
-{'_id': ..., '_created': '1629081092624', 'type': 'installation', 'installation': {'_id': ...}}
+`SubscriptionClient` provides a client interface for interacting with multiple
+Vestaboards using the [Subscription API](https://docs.vestaboard.com/docs/subscription-api/introduction).
 
->>> client.get_subscriptions()
-[{'_id': ..., '_created': '1629081092624', 'title': None, 'icon': None, 'installation': {'_id': ..., 'installable': {'_id': ...}}, 'boards': [{'_id': ...}]}]
+Note that an API secret and key is required to get subscriptions or send
+messages. These credentials can be created from the [Developer section of the
+web app](https://web.vestaboard.com/).
 
->>> client.post_message(SUBSCRIPTION_ID, "Hello, World")
-{'message': {'id': ..., 'text': 'Hello, World', 'created': '1635801572442'}}
+```py
+import vesta
+subscription_client = vesta.SubscriptionClient("api_key", "api_secret")
+
+# List subscriptions and send them messages:
+subscriptions = subscription_client.get_subscriptions()
+for subscription in subscriptions:
+    subscription_client.send_message(subscription["id"], "Hello World")
 ```
 
-Messages can be posted as either text strings or two-dimensional arrays of
-character codes representing the exact positions of characters on the board.
-
-If text is specified, the lines will be centered horizontally and vertically.
-Character codes will be inferred for alphanumeric and punctuation characters,
-or they can be explicitly specified using curly braces containing the character
-code (such as `{5}` or `{65}`).
-
-#### `LocalClient`
+#### Local API
 
 `LocalClient` provides a client interface for interacting with a Vestaboard
 over the local network using [Vestaboard's Local API](https://docs.vestaboard.com/docs/local-api/introduction).
@@ -77,45 +85,7 @@ assert local_client.write_message(message)
 assert local_client.read_message() == message
 ```
 
-#### `ReadWriteClient`
-
-`ReadWriteClient` provides a client interface for interacting with a Vestaboard
-using the [Read / Write API](https://docs.vestaboard.com/docs/read-write-api/introduction).
-
-Note that Vestaboard owners must first obtain their Read / Write API key by
-enabling the Vestaboard's Read / Write API via the Settings section of the
-mobile app or from the Developer section of the web app.
-
-```py
-import vesta
-rw_client = vesta.ReadWriteClient("read_write_key")
-
-# Once enabled, you can write and read messages:
-message = vesta.encode_text("{67} Hello, World {68}")
-assert rw_client.write_message(message)
-assert rw_client.read_message() == message
-```
-
-#### `SubscriptionClient`
-
-`SubscriptionClient` provides a client interface for interacting with multiple
-Vestaboards using the [Subscription API](https://docs.vestaboard.com/docs/subscription-api/introduction).
-
-Note that an API secret and key is required to get subscriptions or send
-messages. These credentials can be created from the [Developer section of the
-web app](https://web.vestaboard.com/).
-
-```py
-import vesta
-subscription_client = vesta.SubscriptionClient("api_key", "api_secret")
-
-# List subscriptions and send them messages:
-subscriptions = subscription_client.get_subscriptions()
-for subscription in subscriptions:
-    subscription_client.send_message(subscription["id"], "Hello World")
-```
-
-#### `VBMLClient`
+#### VBML API
 
 `VBMLClient` provides a client interface for Vestaboard's [VBML (Vestaboard
 Markup Language)](https://docs.vestaboard.com/docs/vbml) API.
@@ -134,6 +104,26 @@ component = Component(
 vbml_client = vesta.VBMLClient()
 vesta.pprint(vbml_client.compose([component]))
 ```
+
+#### Platform Client
+
+`Client` provides a client interface for interacting with the **deprecated**
+[Vestaboard Platform API](https://docs-v1.vestaboard.com/introduction).
+
+This is the original Vestaboard Platform API. It is **deprecated** and has been
+superseded by the other APIs listed above. In particular, Vestaboard encourages
+users of the Platform API to switch to the [Subscription API](#subscription-api),
+which offers nearly identical functionality.
+
+### Messages
+
+Messages can be posted as either text strings or two-dimensional arrays of
+character codes representing the exact positions of characters on the board.
+
+If text is specified, the lines will be centered horizontally and vertically.
+Character codes will be inferred for alphanumeric and punctuation characters,
+or they can be explicitly specified using curly braces containing the character
+code (such as `{5}` or `{65}`).
 
 ### Character Encoding
 

@@ -47,6 +47,8 @@ class Client:
     Optionally, an alternate ``base_url`` can be specified, as well as any
     additional HTTP ``headers`` that should be sent with every request
     (such as a custom `User-Agent` header).
+
+    .. deprecated:: 0.12
     """
 
     def __init__(
