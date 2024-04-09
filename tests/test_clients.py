@@ -10,6 +10,7 @@ from vesta.chars import ROWS
 from vesta.clients import Client
 from vesta.clients import LocalClient
 from vesta.clients import ReadWriteClient
+from vesta.clients import SubscriptionClient
 from vesta.clients import VBMLClient
 from vesta.vbml import Component
 
@@ -30,6 +31,11 @@ def local_client():
 @pytest.fixture
 def rw_client():
     return ReadWriteClient("key")
+
+
+@pytest.fixture
+def subscription_client():
+    return SubscriptionClient("key", "secret")
 
 
 @pytest.fixture
@@ -229,6 +235,59 @@ class TestReadWriteClient:
     def test_write_message_type(self, rw_client: ReadWriteClient):
         with pytest.raises(TypeError, match=r"unsupported message type"):
             rw_client.write_message(True)  # type: ignore
+
+
+class TestSubscriptionClient:
+    def test_base_url(self):
+        base_url = "https://www.example.com"
+        client = SubscriptionClient("key", "secret", base_url=base_url)
+        assert client.http.base_url == base_url
+        assert base_url in repr(client)
+
+    def test_headers(self):
+        client = SubscriptionClient("key", "secret", headers={"User-Agent": "Vesta"})
+        assert client.http.headers["X-Vestaboard-Api-Key"] == "key"
+        assert client.http.headers["X-Vestaboard-Api-Secret"] == "secret"
+        assert client.http.headers["User-Agent"] == "Vesta"
+
+    def test_get_subscriptions(
+        self, subscription_client: SubscriptionClient, respx_mock: MockRouter
+    ):
+        subscriptions = [True]
+        respx_mock.get("https://subscriptions.vestaboard.com/subscriptions").respond(
+            json=subscriptions
+        )
+        assert subscription_client.get_subscriptions() == subscriptions
+
+    def test_send_message_text(
+        self, subscription_client: SubscriptionClient, respx_mock: MockRouter
+    ):
+        text = "abc"
+        respx_mock.post(
+            "https://subscriptions.vestaboard.com/subscriptions/sub_id/message",
+            json={"text": text},
+        ).respond(json={})
+        subscription_client.send_message("sub_id", text)
+
+    def test_send_message_list(
+        self, subscription_client: SubscriptionClient, respx_mock: MockRouter
+    ):
+        chars = [[0] * COLS] * ROWS
+        respx_mock.post(
+            "https://subscriptions.vestaboard.com/subscriptions/sub_id/message",
+            json={"characters": chars},
+        ).respond(json={})
+        subscription_client.send_message("sub_id", chars)
+
+    def test_send_message_list_dimensions(
+        self, subscription_client: SubscriptionClient
+    ):
+        with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
+            subscription_client.send_message("sub_id", [])
+
+    def test_send_message_type(self, subscription_client: SubscriptionClient):
+        with pytest.raises(TypeError, match=r"unsupported message type"):
+            subscription_client.send_message("sub_id", True)  # type: ignore
 
 
 class TestVBMLClient:

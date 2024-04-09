@@ -57,10 +57,27 @@ with a Vestaboard using the `Read / Write API
 .. important::
 
     A Read / Write API key is required to read or write messages. This key is
-    obtained by enabling the Vestaboard's Read / Write API via the Settings
-    section of the mobile app or from the Developer section of the web app.
+    obtained by enabling the Vestaboard's Read / Write API via the *Settings*
+    section of the mobile app or from the `Developer section of the web app
+    <https://web.vestaboard.com/>`_.
 
 .. autoclass:: vesta.ReadWriteClient
+    :members:
+
+``SubscriptionClient``
+----------------------
+
+:py:class:`vesta.SubscriptionClient` provides a client interface for interacting
+with multiple Vestaboards using the `Subscription API
+<https://docs.vestaboard.com/docs/subscription-api/introduction>`_.
+
+.. important::
+
+    An API secret and key is required to get subscriptions or send messages.
+    These credentials can be created from the `Developer section of the web
+    app <https://web.vestaboard.com/>`_.
+
+.. autoclass:: vesta.SubscriptionClient
     :members:
 
 ``VBMLClient``

@@ -286,6 +286,80 @@ class ReadWriteClient:
         return r.is_success
 
 
+class SubscriptionClient:
+    """Provides a Vestaboard Subscription API client interface.
+
+    Credentials must be provided as an ``api_key`` and ``api_secret``.
+
+    Optionally, an alternate ``base_url`` can be specified, as well as any
+    additional HTTP ``headers`` that should be sent with every request
+    (such as a custom `User-Agent` header).
+
+    .. versionadded:: 0.12.0
+    """
+
+    def __init__(
+        self,
+        api_key: str,
+        api_secret: str,
+        *,
+        http_client: Optional[httpx.Client] = None,
+        base_url: str = "https://subscriptions.vestaboard.com",
+        headers: Optional[Mapping[str, str]] = None,
+    ):
+        self.http = http_client or httpx.Client()
+        self.http.base_url = httpx.URL(base_url)
+        self.http.headers["x-vestaboard-api-key"] = api_key
+        self.http.headers["x-vestaboard-api-secret"] = api_secret
+        if headers:
+            self.http.headers.update(headers)
+
+    def __repr__(self):
+        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
+
+    def get_subscriptions(self) -> List[Dict[str, Any]]:
+        """Lists all subscriptions to which the viewer has access."""
+        r = self.http.get("/subscriptions")
+        r.raise_for_status()
+        return r.json()
+
+    def send_message(
+        self,
+        subscription_id: str,
+        message: Union[str, Rows],
+    ) -> Dict[str, Any]:
+        """Send a new message to a subscription.
+
+        The authenticated viewer must have access to the subscription.
+
+        `message` can be either a string of text or a two-dimensional (6, 22)
+        array of character codes representing the exact positions of characters
+        on the board.
+
+        If text is specified, the lines will be centered horizontally and
+        vertically. Character codes will be inferred for alphanumeric and
+        punctuation characters, or they can be explicitly specified using curly
+        braces containing the character code (such as ``{5}`` or ``{65}``).
+
+        :raises ValueError: if ``message`` is a list with unsupported dimensions
+        """
+        data: Dict[str, Union[str, Rows]]
+        if isinstance(message, str):
+            data = {"text": message}
+        elif isinstance(message, list):
+            validate_rows(message)
+            data = {"characters": message}
+        else:
+            raise TypeError(f"unsupported message type: {type(message)}")
+
+        r = self.http.post(
+            f"/subscriptions/{subscription_id}/message",
+            json=data,
+        )
+        r.raise_for_status()
+        return r.json()
+
+
 class VBMLClient:
     """Provides a VBML (Vestaboard Markup Language) API client interface.
 
