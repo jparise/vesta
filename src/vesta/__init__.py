@@ -6,6 +6,7 @@ from .chars import pprint
 from .clients import Client
 from .clients import LocalClient
 from .clients import ReadWriteClient
+from .clients import SubscriptionClient
 from .clients import VBMLClient
 
 __all__ = (
@@ -17,6 +18,7 @@ __all__ = (
     "Client",
     "LocalClient",
     "ReadWriteClient",
+    "SubscriptionClient",
     "VBMLClient",
 )
 

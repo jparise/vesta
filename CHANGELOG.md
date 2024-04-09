@@ -2,10 +2,10 @@
 
 ## 0.12.0 - Unreleased
 ### Added
-- All clients now support a user-provided [httpx.Client](https://www.python-httpx.org/api/#client)
-  objects.
+- All clients now support a user-provided [httpx.Client](https://www.python-httpx.org/api/#client).
 - Added support for the VBML `absolutePosition` style.
 - Added support for the VBML `rawCharacters` component field.
+- `SubscriptionClient` provides a client interface to Vestaboard's Subscription API.
 
 ### Changed
 - The `encode_*()` functions now consistently specify keyword-only arguments.

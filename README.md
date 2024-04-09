@@ -96,6 +96,25 @@ assert rw_client.write_message(message)
 assert rw_client.read_message() == message
 ```
 
+#### `SubscriptionClient`
+
+`SubscriptionClient` provides a client interface for interacting with multiple
+Vestaboards using the [Subscription API](https://docs.vestaboard.com/docs/subscription-api/introduction).
+
+Note that an API secret and key is required to get subscriptions or send
+messages. These credentials can be created from the [Developer section of the
+web app](https://web.vestaboard.com/).
+
+```py
+import vesta
+subscription_client = vesta.SubscriptionClient("api_key", "api_secret")
+
+# List subscriptions and send them messages:
+subscriptions = subscription_client.get_subscriptions()
+for subscription in subscriptions:
+    subscription_client.send_message(subscription["id"], "Hello World")
+```
+
 #### `VBMLClient`
 
 `VBMLClient` provides a client interface for Vestaboard's [VBML (Vestaboard
