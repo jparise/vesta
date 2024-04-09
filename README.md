@@ -64,7 +64,7 @@ subscription_client = vesta.SubscriptionClient("api_key", "api_secret")
 # List subscriptions and send them messages:
 subscriptions = subscription_client.get_subscriptions()
 for subscription in subscriptions:
-    subscription_client.send_message(subscription["id"], "Hello World")
+    subscription_client.send_message(subscription["id"], "{67} Hello, World {68}")
 ```
 
 #### Local API
