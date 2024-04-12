@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.12.0 - Unreleased
+## 0.12.0 - 2024-04-12
 ### Added
 - All clients now support a user-provided [httpx.Client](https://www.python-httpx.org/api/#client).
 - Added support for the VBML `absolutePosition` style.
