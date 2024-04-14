@@ -34,16 +34,12 @@ docs = [
     "furo==2024.1.29",
     "sphinx_mdinclude==0.5.3",
 ]
-lint = [
-    "ruff==0.3.0",
-]
-test = [
+dev = [
+    "mypy==1.9.0",
     "pytest==8.1.0",
     "pytest-cov==5.0.0",
     "respx==0.21.0",
-]
-typing = [
-    "mypy==1.9.0",
+    "ruff==0.3.0",
 ]
 
 [project.urls]
