@@ -32,7 +32,7 @@ dependencies = [
 docs = [
     "Sphinx==7.2.2",
     "furo==2024.1.29",
-    "sphinx_mdinclude==0.5.3",
+    "sphinx_mdinclude==0.6.0",
 ]
 dev = [
     "mypy==1.9.0",
