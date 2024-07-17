@@ -30,7 +30,7 @@ dependencies = [
 
 [project.optional-dependencies]
 docs = [
-    "Sphinx==7.3.7",
+    "Sphinx==7.4.5",
     "furo==2024.5.6",
     "sphinx_mdinclude==0.6.0",
 ]
