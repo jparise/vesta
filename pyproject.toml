@@ -17,13 +17,13 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
-requires-python = ">= 3.8"
+requires-python = ">= 3.9"
 dependencies = [
     "httpx>=0.23.1",
 ]
@@ -58,7 +58,7 @@ source = ["src"]
 
 [tool.mypy]
 packages = ["vesta", "tests"]
-python_version = 3.8
+python_version = 3.9
 
 [tool.pytest.ini_options]
 addopts = "--cov=vesta --cov-report=term-missing --doctest-modules"
