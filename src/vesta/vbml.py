@@ -100,7 +100,7 @@ class Component:
     the ``style`` dictionary.
     """
 
-    __slots__ = ["template", "raw_characters", "style"]
+    __slots__ = ["raw_characters", "style", "template"]
 
     def __init__(
         self,

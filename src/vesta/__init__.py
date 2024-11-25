@@ -10,16 +10,16 @@ from .clients import SubscriptionClient
 from .clients import VBMLClient
 
 __all__ = (
-    "Color",
-    "encode",
-    "encode_row",
-    "encode_text",
-    "pprint",
     "Client",
+    "Color",
     "LocalClient",
     "ReadWriteClient",
     "SubscriptionClient",
     "VBMLClient",
+    "encode",
+    "encode_row",
+    "encode_text",
+    "pprint",
 )
 
 __version__ = "1.0.0-dev"
