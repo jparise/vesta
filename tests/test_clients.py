@@ -170,7 +170,10 @@ class TestLocalClient:
         respx_mock.post("http://vestaboard.local:7000/local-api/message").respond(201)
         assert local_client.write_message(chars)
         assert respx_mock.calls.called
-        assert respx_mock.calls.last.request.content == json.dumps(chars).encode()
+        assert (
+            respx_mock.calls.last.request.content
+            == json.dumps(chars, separators=(",", ":")).encode()
+        )
 
     def test_write_message_dimensions(self, local_client: LocalClient):
         with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
@@ -227,7 +230,10 @@ class TestReadWriteClient:
         respx_mock.post("https://rw.vestaboard.com/").respond(200)
         assert rw_client.write_message(chars)
         assert respx_mock.calls.called
-        assert respx_mock.calls.last.request.content == json.dumps(chars).encode()
+        assert (
+            respx_mock.calls.last.request.content
+            == json.dumps(chars, separators=(",", ":")).encode()
+        )
 
     def test_write_message_list_dimensions(self, rw_client: ReadWriteClient):
         with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
