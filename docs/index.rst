@@ -9,6 +9,7 @@ Python. It provides API clients and character encoding utilities.
    :hidden:
 
    changelog
+   GitHub Project <https://github.com/jparise/vesta>
 
 Installation
 ============
