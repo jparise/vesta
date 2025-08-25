@@ -113,14 +113,14 @@ def encode(s: str) -> Row:
                 out.append(int(s[i + 1 : i + 3]))
                 skip_to = i + 4
             else:
-                raise ValueError(f"{i+1}: missing }} at index {i+2} or {i+3}")
+                raise ValueError(f"{i + 1}: missing }} at index {i + 2} or {i + 3}")
             if out[-1] not in CHARCODES:
-                raise ValueError(f"{i+2}: unsupported character code: {out[-1]}")
+                raise ValueError(f"{i + 2}: unsupported character code: {out[-1]}")
         else:
             try:
                 out.append(CHARMAP[c])
             except KeyError:
-                raise ValueError(f"{i+1}: unsupported character: {c}")
+                raise ValueError(f"{i + 1}: unsupported character: {c}")
 
     return out
 
