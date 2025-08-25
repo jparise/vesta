@@ -28,7 +28,7 @@ dependencies = [
     "httpx>=0.23.1",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 docs = [
     "Sphinx==8.2.0",
     "furo==2025.7.19",
