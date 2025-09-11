@@ -75,7 +75,7 @@ class Client:
             self.http.headers.update(headers)
 
     def __repr__(self):
-        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
+        return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
     def get_subscriptions(self) -> List[Dict[str, Any]]:
         """Lists all subscriptions to which the viewer has access."""
@@ -155,7 +155,7 @@ class LocalClient:
             self.api_key = local_api_key
 
     def __repr__(self):
-        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
+        return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
     @property
     def api_key(self) -> Optional[str]:
@@ -253,7 +253,7 @@ class ReadWriteClient:
             self.http.headers.update(headers)
 
     def __repr__(self):
-        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
+        return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
     def read_message(self) -> Optional[Rows]:
         """Read the Vestaboard's current message."""
@@ -324,7 +324,7 @@ class SubscriptionClient:
             self.http.headers.update(headers)
 
     def __repr__(self):
-        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
+        return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
     def get_subscriptions(self) -> List[Dict[str, Any]]:
         """Lists all subscriptions to which the viewer has access."""
@@ -388,7 +388,7 @@ class VBMLClient:
             self.http.headers.update(headers)
 
     def __repr__(self):
-        return f"{type(self).__name__}(base_url={self.http.base_url!r})"
+        return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
     def compose(
         self,
