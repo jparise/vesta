@@ -420,6 +420,8 @@ class VBMLClient:
     def format(self, message: str) -> Rows:
         """Formats a message string into rows of character codes.
 
+        .. versionadded:: 0.13.0
+
         :returns: Rows of character codes representing the formatted message
         """
         data = {"message": message}
