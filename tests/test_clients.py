@@ -325,3 +325,10 @@ class TestVBMLClient:
     def test_component_no_components(self, vbml_client: VBMLClient):
         with pytest.raises(ValueError, match=r"expected at least one component"):
             vbml_client.compose([])
+
+    def test_format(self, vbml_client: VBMLClient, respx_mock: MockRouter):
+        chars = [[0] * COLS] * ROWS
+        respx_mock.post("https://vbml.vestaboard.com/format").respond(json=chars)
+
+        assert vbml_client.format("message") == chars
+        assert respx_mock.calls.called

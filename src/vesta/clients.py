@@ -416,3 +416,14 @@ class VBMLClient:
         r = self.http.post("/compose", json=data)
         r.raise_for_status()
         return r.json()
+
+    def format(self, message: str) -> Rows:
+        """Formats a message string into rows of character codes.
+
+        .. versionadded:: 0.13.0
+
+        :returns: Rows of character codes representing the formatted message
+        """
+        data = {"message": message}
+        r = self.http.post("/format", json=data)
+        return r.json()
