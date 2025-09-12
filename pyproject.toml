@@ -35,7 +35,7 @@ docs = [
     "sphinx_mdinclude==0.6.0",
 ]
 dev = [
-    "mypy==1.17.0",
+    "mypy==1.18.1",
     "pytest==8.4.0",
     "pytest-cov==7.0.0",
     "respx==0.22.0",
