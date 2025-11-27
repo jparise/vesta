@@ -58,7 +58,7 @@ source = ["src"]
 
 [tool.mypy]
 packages = ["vesta", "tests"]
-python_version = 3.10
+python_version = "3.10"
 
 [tool.pytest.ini_options]
 addopts = "--cov=vesta --cov-report=term-missing --doctest-modules"
