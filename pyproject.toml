@@ -28,17 +28,25 @@ dependencies = [
 ]
 
 [dependency-groups]
+dev = [
+    {include-group = "docs"},
+    {include-group = "lint"},
+    {include-group = "test"},
+]
 docs = [
     "Sphinx==8.2.0",
     "furo==2025.9.25",
     "sphinx_mdinclude==0.6.0",
 ]
-dev = [
+lint = [
     "mypy==1.18.1",
+    "ruff==0.14.0",
+    {include-group = "test"},
+]
+test = [
     "pytest==9.0.1",
     "pytest-cov==7.0.0",
     "respx==0.22.0",
-    "ruff==0.14.0",
 ]
 
 [project.urls]
