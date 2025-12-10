@@ -10,11 +10,10 @@ authors = [
     {name = "Jon Parise", email = "jon@indelible.org"},
 ]
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 keywords = ["vestaboard"]
 classifiers = [
     "Development Status :: 4 - Beta",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
