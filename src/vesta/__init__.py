@@ -8,10 +8,12 @@ from .clients import LocalClient
 from .clients import ReadWriteClient
 from .clients import SubscriptionClient
 from .clients import VBMLClient
+from .http import HTTPError
 
 __all__ = (
     "Client",
     "Color",
+    "HTTPError",
     "LocalClient",
     "ReadWriteClient",
     "SubscriptionClient",

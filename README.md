@@ -5,17 +5,12 @@ It provides API clients and character encoding utilities.
 
 ## Installation
 
-Vesta requires Python 3.9 or later. It can be installed [via PyPI][pypi]:
+Vesta requires Python 3.10 or later and has no other runtime dependencies.
+It can be installed [via PyPI](https://pypi.org/project/vesta/).
 
 ```sh
 $ python -m pip install vesta
 ```
-
-Its only runtime dependency is the [HTTPX library][httpx], which will be
-installed automatically.
-
-[pypi]: https://pypi.org/project/vesta/
-[httpx]: https://www.python-httpx.org/
 
 ## Usage
 
