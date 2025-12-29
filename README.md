@@ -172,7 +172,7 @@ console, which can be useful during development.
 
 ## Examples
 
-- [Dad Jokes](./examples/dadjokes.py)
+- [Vestaboard REPL](./examples/repl.py)
 - [Olympic Medal Standings](https://gist.github.com/jparise/f3142c58d3478ff1b236ee061f541724)
 
 ## License
