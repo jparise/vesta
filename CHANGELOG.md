@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+### Changed
+- Removed dependency on `httpx`. We no longer have any runtime dependencies
+  other than the Python standard library.
+
 ## 0.12.0 - 2024-04-12
 ### Added
 - All clients now support a user-provided [httpx.Client](https://www.python-httpx.org/api/#client).

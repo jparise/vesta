@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import json
-from typing import TYPE_CHECKING
+from json import dumps as json_dumps
 
 import pytest
 
@@ -12,10 +11,32 @@ from vesta.clients import LocalClient
 from vesta.clients import ReadWriteClient
 from vesta.clients import SubscriptionClient
 from vesta.clients import VBMLClient
+from vesta.http import Response
 from vesta.vbml import Component
 
-if TYPE_CHECKING:
-    from respx import MockRouter
+
+@pytest.fixture
+def mock_response(monkeypatch):
+    """Fixture that returns a factory for mocking HTTP responses."""
+
+    def _mock(client, status_code=200, body=None, json=None):
+        last_request = {}
+
+        if body is not None:
+            response_body = body
+        elif json is not None:
+            response_body = json_dumps(json).encode("utf-8")
+        else:
+            response_body = b"{}"
+
+        def fake_request(method, url, **kwargs):
+            last_request.update({"method": method, "url": url, **kwargs})
+            return Response(status_code, response_body, {})
+
+        monkeypatch.setattr(client.http, "request", fake_request)
+        return last_request
+
+    return _mock
 
 
 @pytest.fixture
@@ -57,33 +78,31 @@ class TestClient:
         assert client.http.headers["X-Vestaboard-Api-Secret"] == "secret"
         assert client.http.headers["User-Agent"] == "Vesta"
 
-    def test_get_subscriptions(self, client: Client, respx_mock: MockRouter):
+    def test_get_subscriptions(self, client: Client, mock_response):
         subscriptions = [True]
-        respx_mock.get("https://platform.vestaboard.com/subscriptions").respond(
-            json={"subscriptions": subscriptions}
-        )
+        mock_response(client, json={"subscriptions": subscriptions})
         assert client.get_subscriptions() == subscriptions
 
-    def test_get_viewer(self, client: Client, respx_mock: MockRouter):
+    def test_get_viewer(self, client: Client, mock_response):
         viewer = {"_id": 1}
-        respx_mock.get("https://platform.vestaboard.com/viewer").respond(json=viewer)
+        mock_response(client, json=viewer)
         assert client.get_viewer() == viewer
 
-    def test_post_message_text(self, client: Client, respx_mock: MockRouter):
+    def test_post_message_text(self, client: Client, mock_response):
         text = "abc"
-        respx_mock.post(
-            "https://platform.vestaboard.com/subscriptions/sub_id/message",
-            json={"text": text},
-        ).respond(json={})
+        mock = mock_response(client)
         client.post_message("sub_id", text)
 
-    def test_post_message_list(self, client: Client, respx_mock: MockRouter):
+        assert mock["url"] == "/subscriptions/sub_id/message"
+        assert mock["json"] == {"text": text}
+
+    def test_post_message_list(self, client: Client, mock_response):
         chars = [[0] * COLS] * ROWS
-        respx_mock.post(
-            "https://platform.vestaboard.com/subscriptions/sub_id/message",
-            json={"characters": chars},
-        ).respond(json={})
+        mock = mock_response(client)
         client.post_message("sub_id", chars)
+
+        assert mock["url"] == "/subscriptions/sub_id/message"
+        assert mock["json"] == {"characters": chars}
 
     def test_post_message_list_dimensions(self, client: Client):
         with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
@@ -117,27 +136,24 @@ class TestLocalClient:
         assert local_client.enabled
         assert local_client.api_key == local_api_key
 
-    def test_enable(self, respx_mock: MockRouter):
+    def test_enable(self, mock_response):
         local_client = LocalClient()
         local_api_key = "key"
-        respx_mock.post("http://vestaboard.local:7000/local-api/enablement").respond(
-            json={"apiKey": local_api_key},
-        )
+        mock = mock_response(local_client, json={"apiKey": local_api_key})
         rv = local_client.enable("enablement_token")
         assert rv == local_api_key
         assert local_client.api_key == local_api_key
         assert local_client.enabled
-        assert respx_mock.calls.called
+
+        assert mock["url"] == "/local-api/enablement"
         assert (
-            respx_mock.calls.last.request.headers.get(
-                "X-Vestaboard-Local-Api-Enablement-Token"
-            )
+            mock["headers"]["X-Vestaboard-Local-Api-Enablement-Token"]
             == "enablement_token"
         )
 
-    def test_enable_failure(self, respx_mock: MockRouter):
+    def test_enable_failure(self, mock_response):
         local_client = LocalClient()
-        respx_mock.post("http://vestaboard.local:7000/local-api/enablement")
+        mock_response(local_client)
         rv = local_client.enable("enablement_token")
         assert rv is None
         assert not local_client.api_key
@@ -150,30 +166,24 @@ class TestLocalClient:
         with pytest.raises(RuntimeError, match=r"Local API has not been enabled"):
             local_client.write_message([])
 
-    def test_read_message(self, local_client: LocalClient, respx_mock: MockRouter):
+    def test_read_message(self, local_client: LocalClient, mock_response):
         chars = [[0] * COLS] * ROWS
-        respx_mock.get("http://vestaboard.local:7000/local-api/message").respond(
-            json={"message": chars}
-        )
+        mock_response(local_client, json={"message": chars})
         message = local_client.read_message()
         assert message == chars
 
-    def test_read_message_empty(
-        self, local_client: LocalClient, respx_mock: MockRouter
-    ):
-        respx_mock.get("http://vestaboard.local:7000/local-api/message")
+    def test_read_message_empty(self, local_client: LocalClient, mock_response):
+        mock_response(local_client)
         message = local_client.read_message()
         assert message is None
 
-    def test_write_message(self, local_client: LocalClient, respx_mock: MockRouter):
+    def test_write_message(self, local_client: LocalClient, mock_response):
         chars = [[0] * COLS] * ROWS
-        respx_mock.post("http://vestaboard.local:7000/local-api/message").respond(201)
+        mock = mock_response(local_client, status_code=201, body=b"")
         assert local_client.write_message(chars)
-        assert respx_mock.calls.called
-        assert (
-            respx_mock.calls.last.request.content
-            == json.dumps(chars, separators=(",", ":")).encode()
-        )
+
+        assert mock["url"] == "/local-api/message"
+        assert mock["json"] == chars
 
     def test_write_message_dimensions(self, local_client: LocalClient):
         with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
@@ -192,48 +202,34 @@ class TestReadWriteClient:
         assert client.http.headers["X-Vestaboard-Read-Write-Key"] == "key"
         assert client.http.headers["User-Agent"] == "Vesta"
 
-    def test_read_message(self, rw_client: ReadWriteClient, respx_mock: MockRouter):
+    def test_read_message(self, rw_client: ReadWriteClient, mock_response):
         chars = [[0] * COLS] * ROWS
-        respx_mock.get("https://rw.vestaboard.com/").respond(
-            json={"currentMessage": {"layout": json.dumps(chars)}},
-        )
+        mock_response(rw_client, json={"currentMessage": {"layout": json_dumps(chars)}})
         message = rw_client.read_message()
         assert message == chars
 
-    def test_read_message_empty(
-        self, rw_client: ReadWriteClient, respx_mock: MockRouter
-    ):
-        respx_mock.get("https://rw.vestaboard.com/")
+    def test_read_message_empty(self, rw_client: ReadWriteClient, mock_response):
+        mock_response(rw_client)
         message = rw_client.read_message()
         assert message is None
 
-    def test_read_message_empty_layout(
-        self, rw_client: ReadWriteClient, respx_mock: MockRouter
-    ):
-        respx_mock.get("https://rw.vestaboard.com/").respond(
-            json={"currentMessage": {"layout": ""}},
-        )
+    def test_read_message_empty_layout(self, rw_client: ReadWriteClient, mock_response):
+        mock_response(rw_client, json={"currentMessage": {"layout": ""}})
         message = rw_client.read_message()
         assert message is None
 
-    def test_write_message_text(
-        self, rw_client: ReadWriteClient, respx_mock: MockRouter
-    ):
+    def test_write_message_text(self, rw_client: ReadWriteClient, mock_response):
         text = "abc"
-        respx_mock.post("https://rw.vestaboard.com/").respond(200)
+        mock_response(rw_client)
         rw_client.write_message(text)
 
-    def test_write_message_list(
-        self, rw_client: ReadWriteClient, respx_mock: MockRouter
-    ):
+    def test_write_message_list(self, rw_client: ReadWriteClient, mock_response):
         chars = [[0] * COLS] * ROWS
-        respx_mock.post("https://rw.vestaboard.com/").respond(200)
+        mock = mock_response(rw_client)
         assert rw_client.write_message(chars)
-        assert respx_mock.calls.called
-        assert (
-            respx_mock.calls.last.request.content
-            == json.dumps(chars, separators=(",", ":")).encode()
-        )
+
+        assert mock["url"] == ""
+        assert mock["json"] == chars
 
     def test_write_message_list_dimensions(self, rw_client: ReadWriteClient):
         with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
@@ -253,38 +249,36 @@ class TestSubscriptionClient:
 
     def test_headers(self):
         client = SubscriptionClient("key", "secret", headers={"User-Agent": "Vesta"})
-        assert client.http.headers["X-Vestaboard-Api-Key"] == "key"
-        assert client.http.headers["X-Vestaboard-Api-Secret"] == "secret"
+        assert client.http.headers["x-vestaboard-api-key"] == "key"
+        assert client.http.headers["x-vestaboard-api-secret"] == "secret"
         assert client.http.headers["User-Agent"] == "Vesta"
 
     def test_get_subscriptions(
-        self, subscription_client: SubscriptionClient, respx_mock: MockRouter
+        self, subscription_client: SubscriptionClient, mock_response
     ):
         subscriptions = [True]
-        respx_mock.get("https://subscriptions.vestaboard.com/subscriptions").respond(
-            json=subscriptions
-        )
+        mock_response(subscription_client, json=subscriptions)
         assert subscription_client.get_subscriptions() == subscriptions
 
     def test_send_message_text(
-        self, subscription_client: SubscriptionClient, respx_mock: MockRouter
+        self, subscription_client: SubscriptionClient, mock_response
     ):
         text = "abc"
-        respx_mock.post(
-            "https://subscriptions.vestaboard.com/subscriptions/sub_id/message",
-            json={"text": text},
-        ).respond(json={})
+        mock = mock_response(subscription_client)
         subscription_client.send_message("sub_id", text)
 
+        assert mock["url"] == "/subscriptions/sub_id/message"
+        assert mock["json"] == {"text": text}
+
     def test_send_message_list(
-        self, subscription_client: SubscriptionClient, respx_mock: MockRouter
+        self, subscription_client: SubscriptionClient, mock_response
     ):
         chars = [[0] * COLS] * ROWS
-        respx_mock.post(
-            "https://subscriptions.vestaboard.com/subscriptions/sub_id/message",
-            json={"characters": chars},
-        ).respond(json={})
+        mock = mock_response(subscription_client)
         subscription_client.send_message("sub_id", chars)
+
+        assert mock["url"] == "/subscriptions/sub_id/message"
+        assert mock["json"] == {"characters": chars}
 
     def test_send_message_list_dimensions(
         self, subscription_client: SubscriptionClient
@@ -308,16 +302,16 @@ class TestVBMLClient:
         client = VBMLClient(headers={"User-Agent": "Vesta"})
         assert client.http.headers["User-Agent"] == "Vesta"
 
-    def test_compose(self, vbml_client: VBMLClient, respx_mock: MockRouter):
+    def test_compose(self, vbml_client: VBMLClient, mock_response):
         chars = [[0] * COLS] * ROWS
-        respx_mock.post("https://vbml.vestaboard.com/compose").respond(json=chars)
+        mock = mock_response(vbml_client, json=chars)
 
         component = Component("template")
         props = {"prop": "value"}
         assert vbml_client.compose([component], props=props) == chars
-        assert respx_mock.calls.called
 
-        assert json.loads(respx_mock.calls.last.request.content) == {
+        assert mock["url"] == "/compose"
+        assert mock["json"] == {
             "components": [component.asdict()],
             "props": props,
         }
@@ -326,9 +320,9 @@ class TestVBMLClient:
         with pytest.raises(ValueError, match=r"expected at least one component"):
             vbml_client.compose([])
 
-    def test_format(self, vbml_client: VBMLClient, respx_mock: MockRouter):
+    def test_format(self, vbml_client: VBMLClient, mock_response):
         chars = [[0] * COLS] * ROWS
-        respx_mock.post("https://vbml.vestaboard.com/format").respond(json=chars)
+        mock = mock_response(vbml_client, json=chars)
 
         assert vbml_client.format("message") == chars
-        assert respx_mock.calls.called
+        assert mock["url"] == "/format"
