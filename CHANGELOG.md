@@ -1,9 +1,18 @@
 # Changelog
 
-## Unreleased
+## 0.13.0 - 2025-12-29
+### Added
+- Added support for Python 3.13 and 3.14.
+- Added `VBMLClient.format()` for formatting a message string into rows of
+  character codes.
+
 ### Changed
 - Removed dependency on `httpx`. We no longer have any runtime dependencies
   other than the Python standard library.
+
+### Removed
+- Dropped support for Python 3.8 and 3.9.
+- Removed support for user-provided HTTP clients.
 
 ## 0.12.0 - 2024-04-12
 ### Added
