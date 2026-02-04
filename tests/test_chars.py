@@ -24,17 +24,23 @@ def test_encode_character_codes():
 
 
 def test_encode_bad_characters():
-    pytest.raises(ValueError, encode, "<>").match("unsupported character: <")
-    pytest.raises(ValueError, encode, "{99}").match("unsupported character code: 99")
-    pytest.raises(ValueError, encode, "{20").match("missing }")
-    pytest.raises(ValueError, encode, "{999}").match("missing }")
+    with pytest.raises(ValueError, match="unsupported character: <"):
+        encode("<>")
+    with pytest.raises(ValueError, match="unsupported character code: 99"):
+        encode("{99}")
+    with pytest.raises(ValueError, match="missing }"):
+        encode("{20")
+    with pytest.raises(ValueError, match="missing }"):
+        encode("{999}")
 
 
 class TestEncodeRow:
     def test_maximum_length(self):
         encode_row("a" * 21 + "{10}")
-        pytest.raises(Exception, encode_row, "a" * 30).match("30 characters")
-        pytest.raises(Exception, encode_row, "a" * 22 + "{10}").match("23 characters")
+        with pytest.raises(Exception, match="30 characters"):
+            encode_row("a" * 30)
+        with pytest.raises(Exception, match="23 characters"):
+            encode_row("a" * 22 + "{10}")
 
     def test_align_left(self):
         chars = [1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -236,4 +242,5 @@ class TestPrint:
         assert output.getvalue() == "\x1b[90m|\x1b[0m\x1b[93m◼︎\x1b[0m\x1b[90m|\x1b[0m\n"
 
     def test_unknown_character_code(self):
-        pytest.raises(ValueError, pprint, [99]).match("unknown character code: 99")
+        with pytest.raises(ValueError, match="unknown character code: 99"):
+            pprint([99])
