@@ -90,6 +90,19 @@ class TestClient:
         assert mock["data"] == b'{"key":"value"}'
         assert mock["headers"]["Content-type"] == "application/json"
 
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "https://evil.example.com/x",
+            "http://evil.example.com/x",
+            "//evil.example.com/x",
+        ],
+    )
+    def test_rejects_non_relative_path(self, path):
+        client = Client(base_url="https://api.example.com")
+        with pytest.raises(ValueError, match="expected a relative path"):
+            client.request("GET", path)
+
     def test_http_error(self, monkeypatch):
         """Test that urllib.error.HTTPError is raised and propagated correctly."""
         client = Client(base_url="https://api.example.com")

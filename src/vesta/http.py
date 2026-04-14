@@ -32,6 +32,7 @@ from typing import Mapping
 from typing import NamedTuple
 from typing import Optional
 from urllib.parse import urljoin
+from urllib.parse import urlsplit
 
 # Re-export as a convenience
 HTTPError = urllib.error.HTTPError
@@ -69,7 +70,7 @@ class Client:
     def request(
         self,
         method: Literal["GET", "POST"],
-        url: str,
+        path: str,
         *,
         json: Optional[Any] = None,
         headers: Optional[Mapping[str, str]] = None,
@@ -78,8 +79,13 @@ class Client:
 
         Raises urllib.error.HTTPError for 4xx/5xx responses.
         Raises urllib.error.URLError for connection errors.
+        Raises ValueError if ``path`` is not a relative path.
         """
-        full_url = urljoin(self.base_url, url.lstrip("/"))
+        parts = urlsplit(path)
+        if parts.scheme or parts.netloc:
+            raise ValueError(f"expected a relative path, got {path!r}")
+
+        full_url = urljoin(self.base_url, path.lstrip("/"))
 
         request_headers = dict(self.headers)
         if headers:
