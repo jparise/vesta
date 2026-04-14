@@ -316,6 +316,17 @@ class TestVBMLClient:
             "props": props,
         }
 
+    @pytest.mark.parametrize("props", [None, {}])
+    def test_compose_without_props(self, vbml_client: VBMLClient, mock_response, props):
+        chars = [[0] * COLS] * ROWS
+        mock = mock_response(vbml_client, json=chars)
+
+        component = Component("template")
+        assert vbml_client.compose([component], props=props) == chars
+
+        assert mock["url"] == "/compose"
+        assert mock["json"] == {"components": [component.asdict()]}
+
     def test_component_no_components(self, vbml_client: VBMLClient):
         with pytest.raises(ValueError, match=r"expected at least one component"):
             vbml_client.compose([])
