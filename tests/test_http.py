@@ -62,6 +62,34 @@ class TestClient:
         assert resp.json() == {"result": "ok"}
         assert mock["url"] == "https://api.example.com/test"
 
+    def test_request_headers(self, mock_response):
+        client = Client(
+            base_url="https://api.example.com",
+            headers={"X-Base": "base", "X-Shared": "from-client"},
+        )
+        mock = mock_response(client)
+
+        client.request(
+            "GET",
+            "/test",
+            headers={"X-Extra": "extra", "X-Shared": "from-request"},
+        )
+
+        assert mock["headers"]["X-base"] == "base"
+        assert mock["headers"]["X-extra"] == "extra"
+        assert mock["headers"]["X-shared"] == "from-request"
+
+    def test_json_body(self, mock_response):
+        client = Client(base_url="https://api.example.com")
+        mock = mock_response(client)
+
+        client.request("POST", "/test", json={"key": "value"})
+
+        assert mock["method"] == "POST"
+        assert mock["url"] == "https://api.example.com/test"
+        assert mock["data"] == b'{"key":"value"}'
+        assert mock["headers"]["Content-type"] == "application/json"
+
     def test_http_error(self, monkeypatch):
         """Test that urllib.error.HTTPError is raised and propagated correctly."""
         client = Client(base_url="https://api.example.com")
