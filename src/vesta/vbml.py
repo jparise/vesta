@@ -136,7 +136,8 @@ class Component:
         d: Dict[str, Any] = {}
         if self.raw_characters is not None:
             d["rawCharacters"] = self.raw_characters
-        elif self.template is not None:
+        else:
+            assert self.template is not None
             d["template"] = self.template
         if self.style:
             d["style"] = self.style
