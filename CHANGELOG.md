@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.14.0 - 2026-04-26
 ### Added
 - `CloudClient` provides a client interface to Vestaboard's Cloud API, which
   supersedes the Read / Write API. It supports reading and writing messages
