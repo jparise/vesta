@@ -4,6 +4,7 @@ from .chars import encode_row
 from .chars import encode_text
 from .chars import pprint
 from .clients import Client
+from .clients import CloudClient
 from .clients import LocalClient
 from .clients import ReadWriteClient
 from .clients import SubscriptionClient
@@ -12,6 +13,7 @@ from .http import HTTPError
 
 __all__ = (
     "Client",
+    "CloudClient",
     "Color",
     "HTTPError",
     "LocalClient",
@@ -24,4 +26,4 @@ __all__ = (
     "pprint",
 )
 
-__version__ = "0.13.0"
+__version__ = "0.14.0-dev"

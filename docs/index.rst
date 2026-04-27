@@ -24,21 +24,22 @@ Vesta has no runtime dependencies and uses only the Python standard library.
 API Clients
 ===========
 
-Read / Write API
-----------------
+Cloud API
+---------
 
-:py:class:`vesta.ReadWriteClient` provides a client interface for interacting
-with a Vestaboard using the `Read / Write API
-<https://docs.vestaboard.com/docs/read-write-api/introduction>`_.
+:py:class:`vesta.CloudClient` provides a client interface for interacting with
+a Vestaboard using the `Cloud API
+<https://docs.vestaboard.com/docs/read-write-api/endpoints>`_, which supersedes
+the Read / Write API (:py:class:`vesta.ReadWriteClient`). It supports reading
+and writing messages and configuring `message transitions
+<https://docs.vestaboard.com/blog/transitions-api/>`_.
 
 .. important::
 
-    A Read / Write API key is required to read or write messages. This key is
-    obtained by enabling the Vestaboard's Read / Write API via the *Settings*
-    section of the mobile app or from the `Developer section of the web app
-    <https://web.vestaboard.com/>`_.
+    A Vestaboard API token is required. This token can be obtained from the
+    `Developer section of the web app <https://web.vestaboard.com/>`_.
 
-.. autoclass:: vesta.ReadWriteClient
+.. autoclass:: vesta.CloudClient
     :members:
 
 Subscription API
@@ -80,6 +81,21 @@ VBML API
 API.
 
 .. autoclass:: vesta.VBMLClient
+    :members:
+
+Read / Write API
+----------------
+
+:py:class:`vesta.ReadWriteClient` provides a client interface for interacting
+with a Vestaboard using the **deprecated** Read / Write API.
+
+.. warning::
+
+    Vestaboard has renamed the Read / Write API to the Cloud API. This client
+    is **deprecated**; switch to :py:class:`vesta.CloudClient`, which offers
+    the same functionality plus message transitions.
+
+.. autoclass:: vesta.ReadWriteClient
     :members:
 
 Platform API

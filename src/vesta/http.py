@@ -69,7 +69,7 @@ class Client:
 
     def request(
         self,
-        method: Literal["GET", "POST"],
+        method: Literal["GET", "POST", "PUT"],
         path: str,
         *,
         json: Optional[Any] = None,

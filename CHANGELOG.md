@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+### Added
+- `CloudClient` provides a client interface to Vestaboard's Cloud API, which
+  supersedes the Read / Write API. It supports reading and writing messages
+  and the [Transitions API](https://docs.vestaboard.com/blog/transitions-api/)
+  for controlling how messages animate onto the board.
+
+### Changed
+- Vestaboard has renamed the Read / Write API to the Cloud API, so our
+  `ReadWriteClient` interface is now considered deprecated. Switch to
+  `CloudClient`, which offers the same functionality plus transitions.
+
 ## 0.13.0 - 2025-12-29
 ### Added
 - Added support for Python 3.13 and 3.14.
