@@ -7,6 +7,7 @@ import pytest
 from vesta.chars import COLS
 from vesta.chars import ROWS
 from vesta.clients import Client
+from vesta.clients import CloudClient
 from vesta.clients import LocalClient
 from vesta.clients import ReadWriteClient
 from vesta.clients import SubscriptionClient
@@ -57,6 +58,11 @@ def rw_client():
 @pytest.fixture
 def subscription_client():
     return SubscriptionClient("key", "secret")
+
+
+@pytest.fixture
+def cloud_client():
+    return CloudClient("token")
 
 
 @pytest.fixture
@@ -190,6 +196,7 @@ class TestLocalClient:
             local_client.write_message([])
 
 
+@pytest.mark.filterwarnings("ignore:Vestaboard has renamed the Read / Write API")
 class TestReadWriteClient:
     def test_base_url(self):
         base_url = "http://example.local"
@@ -289,6 +296,87 @@ class TestSubscriptionClient:
     def test_send_message_type(self, subscription_client: SubscriptionClient):
         with pytest.raises(TypeError, match=r"unsupported message type"):
             subscription_client.send_message("sub_id", True)  # type: ignore
+
+
+class TestCloudClient:
+    def test_base_url(self):
+        base_url = "https://www.example.com"
+        client = CloudClient("token", base_url=base_url)
+        assert client.http.base_url == base_url
+        assert base_url in repr(client)
+
+    def test_headers(self):
+        client = CloudClient("token", headers={"User-Agent": "Vesta"})
+        assert client.http.headers["X-Vestaboard-Token"] == "token"
+        assert client.http.headers["User-Agent"] == "Vesta"
+
+    def test_read_message(self, cloud_client: CloudClient, mock_response):
+        chars = [[0] * COLS] * ROWS
+        mock_response(
+            cloud_client, json={"currentMessage": {"layout": json_dumps(chars)}}
+        )
+        message = cloud_client.read_message()
+        assert message == chars
+
+    def test_read_message_empty(self, cloud_client: CloudClient, mock_response):
+        mock_response(cloud_client)
+        message = cloud_client.read_message()
+        assert message is None
+
+    def test_read_message_empty_layout(self, cloud_client: CloudClient, mock_response):
+        mock_response(cloud_client, json={"currentMessage": {"layout": ""}})
+        message = cloud_client.read_message()
+        assert message is None
+
+    def test_write_message_text(self, cloud_client: CloudClient, mock_response):
+        text = "abc"
+        mock = mock_response(cloud_client)
+        assert cloud_client.write_message(text)
+
+        assert mock["url"] == ""
+        assert mock["json"] == {"text": text}
+
+    def test_write_message_list(self, cloud_client: CloudClient, mock_response):
+        chars = [[0] * COLS] * ROWS
+        mock = mock_response(cloud_client)
+        assert cloud_client.write_message(chars)
+
+        assert mock["url"] == ""
+        assert mock["json"] == {"characters": chars}
+
+    def test_write_message_forced(self, cloud_client: CloudClient, mock_response):
+        text = "abc"
+        mock = mock_response(cloud_client)
+        assert cloud_client.write_message(text, forced=True)
+
+        assert mock["json"] == {"text": text, "forced": True}
+
+    def test_write_message_list_dimensions(self, cloud_client: CloudClient):
+        with pytest.raises(ValueError, match=rf"expected a \({COLS}, {ROWS}\) array"):
+            cloud_client.write_message([])
+
+    def test_write_message_type(self, cloud_client: CloudClient):
+        with pytest.raises(TypeError, match=r"unsupported message type"):
+            cloud_client.write_message(True)  # type: ignore
+
+    def test_get_transition(self, cloud_client: CloudClient, mock_response):
+        settings = {"transition": "wave", "transitionSpeed": "gentle"}
+        mock = mock_response(cloud_client, json=settings)
+        assert cloud_client.get_transition() == settings
+        assert mock["method"] == "GET"
+        assert mock["url"] == "/transition"
+
+    def test_get_transition_empty(self, cloud_client: CloudClient, mock_response):
+        mock_response(cloud_client)
+        assert cloud_client.get_transition() == {}
+
+    def test_set_transition(self, cloud_client: CloudClient, mock_response):
+        settings = {"transition": "curtain", "transitionSpeed": "fast"}
+        mock = mock_response(cloud_client, json=settings)
+        assert cloud_client.set_transition("curtain", "fast") == settings
+        assert mock["method"] == "PUT"
+        assert mock["url"] == "/transition"
+        assert mock["json"] == settings
 
 
 class TestVBMLClient:

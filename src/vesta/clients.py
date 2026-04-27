@@ -25,6 +25,7 @@ import warnings
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Literal
 from typing import Mapping
 from typing import Optional
 from typing import Union
@@ -36,7 +37,14 @@ from .chars import validate_rows
 from .vbml import Component
 from .vbml import Props
 
-__all__ = ["Client", "LocalClient", "ReadWriteClient", "VBMLClient"]
+__all__ = [
+    "Client",
+    "CloudClient",
+    "LocalClient",
+    "ReadWriteClient",
+    "SubscriptionClient",
+    "VBMLClient",
+]
 
 
 class Client:
@@ -223,6 +231,7 @@ class ReadWriteClient:
     (such as a custom `User-Agent` header).
 
     .. versionadded:: 0.8.0
+    .. deprecated:: 0.14
     """
 
     def __init__(
@@ -232,6 +241,12 @@ class ReadWriteClient:
         base_url: str = "https://rw.vestaboard.com/",
         headers: Optional[Mapping[str, str]] = None,
     ):
+        warnings.warn(
+            "Vestaboard has renamed the Read / Write API to the Cloud API. "
+            "Consider using CloudClient instead.",
+            DeprecationWarning,
+        )
+
         all_headers = {"X-Vestaboard-Read-Write-Key": read_write_key}
         if headers:
             all_headers.update(headers)
@@ -348,6 +363,112 @@ class SubscriptionClient:
             json=data,
         )
         return resp.json()
+
+
+class CloudClient:
+    """Provides a Vestaboard Cloud API client interface.
+
+    A Vestaboard API token is required. This token can be obtained from the
+    Developer section of the web app.
+
+    The Cloud API supersedes the Read / Write API and additionally supports
+    the `Transitions API <https://docs.vestaboard.com/blog/transitions-api/>`_,
+    which controls how messages animate onto the board.
+
+    Optionally, an alternate ``base_url`` can be specified, as well as any
+    additional HTTP ``headers`` that should be sent with every request
+    (such as a custom `User-Agent` header).
+
+    .. versionadded:: 0.14.0
+    """
+
+    def __init__(
+        self,
+        api_token: str,
+        *,
+        base_url: str = "https://cloud.vestaboard.com",
+        headers: Optional[Mapping[str, str]] = None,
+    ):
+        all_headers = {"X-Vestaboard-Token": api_token}
+        if headers:
+            all_headers.update(headers)
+
+        self.http = http.Client(base_url=base_url, headers=all_headers)
+
+    def __repr__(self):
+        return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
+
+    def read_message(self) -> Optional[Rows]:
+        """Read the Vestaboard's current message."""
+        resp = self.http.request("GET", "")
+        layout = resp.json({}).get("currentMessage", {}).get("layout")
+        if layout:
+            return json.loads(layout)
+        return None
+
+    def write_message(
+        self,
+        message: Union[str, Rows],
+        *,
+        forced: bool = False,
+    ) -> bool:
+        """Write a message to the Vestaboard.
+
+        `message` can be either a string of text or a two-dimensional (6, 22)
+        array of character codes representing the exact positions of characters
+        on the board.
+
+        If text is specified, the lines will be centered horizontally and
+        vertically. Character codes will be inferred for alphanumeric and
+        punctuation characters, or they can be explicitly specified using curly
+        braces containing the character code (such as ``{5}`` or ``{65}``).
+
+        Set ``forced`` to ``True`` to bypass the rate limit and force the
+        message to display immediately.
+
+        :raises ValueError: if ``message`` is a list with unsupported dimensions
+        """
+        data: Dict[str, Any]
+        if isinstance(message, str):
+            data = {"text": message}
+        elif isinstance(message, list):
+            validate_rows(message)
+            data = {"characters": message}
+        else:
+            raise TypeError(f"unsupported message type: {type(message)}")
+
+        if forced:
+            data["forced"] = True
+
+        resp = self.http.request("POST", "", json=data)
+        return 200 <= resp.status < 300
+
+    def get_transition(self) -> Dict[str, Any]:
+        """Get the current transition settings.
+
+        :returns: A dict with ``transition`` and ``transitionSpeed`` keys.
+        """
+        resp = self.http.request("GET", "/transition")
+        return resp.json({})
+
+    def set_transition(
+        self,
+        transition: Literal["classic", "wave", "drift", "curtain"],
+        speed: Literal["gentle", "fast"],
+    ) -> Dict[str, Any]:
+        """Update the transition settings.
+
+        ``transition`` selects the animation style: ``"classic"``, ``"wave"``,
+        ``"drift"``, or ``"curtain"``. ``speed`` selects the animation speed:
+        ``"gentle"`` or ``"fast"``.
+
+        Settings persist across subsequent messages until changed again.
+
+        :returns: The updated settings as a dict.
+        """
+        data = {"transition": transition, "transitionSpeed": speed}
+        resp = self.http.request("PUT", "/transition", json=data)
+        return resp.json({})
 
 
 class VBMLClient:
