@@ -18,13 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import annotations
-
+from collections.abc import Mapping
 from typing import Any
-from typing import Dict
 from typing import Literal
-from typing import Mapping
-from typing import Optional
 from typing import TypedDict
 
 from .chars import Rows
@@ -104,15 +100,15 @@ class Component:
 
     def __init__(
         self,
-        template: Optional[str] = None,
-        raw_characters: Optional[Rows] = None,
-        style: Optional[Style] = None,
+        template: str | None = None,
+        raw_characters: Rows | None = None,
+        style: Style | None = None,
         *,
-        height: Optional[int] = None,
-        width: Optional[int] = None,
-        justify: Optional[Justification] = None,
-        align: Optional[Alignment] = None,
-        absolute_position: Optional[Position] = None,
+        height: int | None = None,
+        width: int | None = None,
+        justify: Justification | None = None,
+        align: Alignment | None = None,
+        absolute_position: Position | None = None,
     ):
         if not (template is not None or raw_characters is not None):
             raise ValueError("expected template or raw_characters")
@@ -131,9 +127,9 @@ class Component:
         if absolute_position is not None:
             self.style["absolutePosition"] = absolute_position
 
-    def asdict(self) -> Dict[str, Any]:
+    def asdict(self) -> dict[str, Any]:
         """Returns the component's JSON dictionary representation."""
-        d: Dict[str, Any] = {}
+        d: dict[str, Any] = {}
         if self.raw_characters is not None:
             d["rawCharacters"] = self.raw_characters
         else:

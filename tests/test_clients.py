@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from json import dumps as json_dumps
 
 import pytest
