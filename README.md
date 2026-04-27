@@ -16,23 +16,27 @@ $ python -m pip install vesta
 
 ### API Clients
 
-#### Read / Write API
+#### Cloud API
 
-`ReadWriteClient` provides a client interface for interacting with a Vestaboard
-using the [Read / Write API](https://docs.vestaboard.com/docs/read-write-api/introduction).
+`CloudClient` provides a client interface for interacting with a Vestaboard
+using the [Cloud API](https://docs.vestaboard.com/docs/read-write-api/endpoints),
+which supersedes the Read / Write API. It supports reading and writing messages
+and configuring [message transitions](https://docs.vestaboard.com/blog/transitions-api/).
 
-Note that Vestaboard owners must first obtain their Read / Write API key by
-enabling the Vestaboard's Read / Write API via the Settings section of the
-mobile app or from the Developer section of the web app.
+Note that a Vestaboard API token is required. This token can be obtained from
+the Developer section of the web app.
 
 ```py
 import vesta
-rw_client = vesta.ReadWriteClient("read_write_key")
+cloud_client = vesta.CloudClient("api_token")
 
-# Once enabled, you can write and read messages:
+# Write and read messages:
 message = vesta.encode_text("{67} Hello, World {68}")
-assert rw_client.write_message(message)
-assert rw_client.read_message() == message
+assert cloud_client.write_message(message)
+assert cloud_client.read_message() == message
+
+# Configure how new messages animate onto the board:
+cloud_client.set_transition("wave", "gentle")
 ```
 
 #### Subscription API
@@ -107,6 +111,15 @@ component = Component(
 vbml_client = vesta.VBMLClient()
 vesta.pprint(vbml_client.compose([component]))
 ```
+
+#### Read / Write API
+
+`ReadWriteClient` provides a client interface for interacting with a Vestaboard
+using the **deprecated** Read / Write API.
+
+Vestaboard has renamed the Read / Write API to the Cloud API. This client is
+**deprecated**; switch to [`CloudClient`](#cloud-api), which offers the same
+functionality plus message transitions.
 
 #### Platform Client
 
