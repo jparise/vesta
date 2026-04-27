@@ -18,19 +18,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import annotations
-
 import urllib.error
 import urllib.request
+from collections.abc import Mapping
 from json import JSONDecodeError
 from json import dumps as json_dumps
 from json import loads as json_loads
 from typing import Any
-from typing import Dict
 from typing import Literal
-from typing import Mapping
 from typing import NamedTuple
-from typing import Optional
 from urllib.parse import urljoin
 from urllib.parse import urlsplit
 
@@ -43,7 +39,7 @@ class Response(NamedTuple):
 
     status: int
     body: bytes
-    headers: Dict[str, str]
+    headers: dict[str, str]
 
     def json(self, default: Any = None):
         try:
@@ -61,10 +57,10 @@ class Client:
     def __init__(
         self,
         base_url: str = "",
-        headers: Optional[Mapping[str, str]] = None,
+        headers: Mapping[str, str] | None = None,
     ):
         self.base_url = base_url
-        self.headers: Dict[str, str] = dict(headers) if headers else {}
+        self.headers: dict[str, str] = dict(headers) if headers else {}
         self._opener = urllib.request.build_opener()
 
     def request(
@@ -72,8 +68,8 @@ class Client:
         method: Literal["GET", "POST", "PUT"],
         path: str,
         *,
-        json: Optional[Any] = None,
-        headers: Optional[Mapping[str, str]] = None,
+        json: Any | None = None,
+        headers: Mapping[str, str] | None = None,
     ) -> Response:
         """Execute HTTP request and return Response.
 

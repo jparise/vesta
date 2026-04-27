@@ -70,7 +70,7 @@ addopts = "--cov=vesta --cov-report=term-missing --doctest-modules"
 src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "RUF", "W"]
+select = ["E", "F", "I", "RUF", "UP", "W"]
 
 [tool.ruff.lint.isort]
 force-single-line = true

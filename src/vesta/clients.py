@@ -18,17 +18,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import annotations
-
 import json
 import warnings
+from collections.abc import Mapping
 from typing import Any
-from typing import Dict
-from typing import List
 from typing import Literal
-from typing import Mapping
-from typing import Optional
-from typing import Union
 from typing import cast
 
 from . import http
@@ -65,7 +59,7 @@ class Client:
         api_secret: str,
         *,
         base_url: str = "https://platform.vestaboard.com",
-        headers: Optional[Mapping[str, str]] = None,
+        headers: Mapping[str, str] | None = None,
     ):
         warnings.warn(
             "Vestaboard has deprecated the Platform API (Client). "
@@ -85,12 +79,12 @@ class Client:
     def __repr__(self):
         return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
-    def get_subscriptions(self) -> List[Dict[str, Any]]:
+    def get_subscriptions(self) -> list[dict[str, Any]]:
         """Lists all subscriptions to which the viewer has access."""
         resp = self.http.request("GET", "/subscriptions")
         return resp.json({}).get("subscriptions", [])
 
-    def get_viewer(self) -> Dict[str, Any]:
+    def get_viewer(self) -> dict[str, Any]:
         """Describes the currently authenticated viewer."""
         resp = self.http.request("GET", "/viewer")
         return resp.json()
@@ -98,8 +92,8 @@ class Client:
     def post_message(
         self,
         subscription_id: str,
-        message: Union[str, Rows],
-    ) -> Dict[str, Any]:
+        message: str | Rows,
+    ) -> dict[str, Any]:
         """Post a new message to a subscription.
 
         The authenticated viewer must have access to the subscription.
@@ -115,7 +109,7 @@ class Client:
 
         :raises ValueError: if ``message`` is a list with unsupported dimensions
         """
-        data: Dict[str, Union[str, Rows]]
+        data: dict[str, str | Rows]
         if isinstance(message, str):
             data = {"text": message}
         elif isinstance(message, list):
@@ -150,7 +144,7 @@ class LocalClient:
 
     def __init__(
         self,
-        local_api_key: Optional[str] = None,
+        local_api_key: str | None = None,
         *,
         base_url: str = "http://vestaboard.local:7000",
     ):
@@ -162,10 +156,10 @@ class LocalClient:
         return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
     @property
-    def api_key(self) -> Optional[str]:
+    def api_key(self) -> str | None:
         """The client's Local API key."""
         return cast(
-            Optional[str],
+            str | None,
             self.http.headers.get("X-Vestaboard-Local-Api-Key"),
         )
 
@@ -179,7 +173,7 @@ class LocalClient:
         support has been enabled."""
         return self.api_key is not None
 
-    def enable(self, enablement_token) -> Optional[str]:
+    def enable(self, enablement_token) -> str | None:
         """Enable the Vestaboard's Local API using a Local API Enablement Token.
 
         If successful, the Vestaboard's Local API key will be returned and the
@@ -197,7 +191,7 @@ class LocalClient:
 
         return local_api_key
 
-    def read_message(self) -> Optional[Rows]:
+    def read_message(self) -> Rows | None:
         """Read the Vestaboard's current message."""
         if not self.enabled:
             raise RuntimeError("Local API has not been enabled")
@@ -239,7 +233,7 @@ class ReadWriteClient:
         read_write_key: str,
         *,
         base_url: str = "https://rw.vestaboard.com/",
-        headers: Optional[Mapping[str, str]] = None,
+        headers: Mapping[str, str] | None = None,
     ):
         warnings.warn(
             "Vestaboard has renamed the Read / Write API to the Cloud API. "
@@ -256,7 +250,7 @@ class ReadWriteClient:
     def __repr__(self):
         return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
-    def read_message(self) -> Optional[Rows]:
+    def read_message(self) -> Rows | None:
         """Read the Vestaboard's current message."""
         resp = self.http.request("GET", "")
         layout = resp.json({}).get("currentMessage", {}).get("layout")
@@ -264,7 +258,7 @@ class ReadWriteClient:
             return json.loads(layout)
         return None
 
-    def write_message(self, message: Union[str, Rows]) -> bool:
+    def write_message(self, message: str | Rows) -> bool:
         """Write a message to the Vestaboard.
 
         `message` can be either a string of text or a two-dimensional (6, 22)
@@ -278,7 +272,7 @@ class ReadWriteClient:
 
         :raises ValueError: if ``message`` is a list with unsupported dimensions
         """
-        data: Union[Dict[str, str], Rows]
+        data: dict[str, str] | Rows
         if isinstance(message, str):
             data = {"text": message}
         elif isinstance(message, list):
@@ -309,7 +303,7 @@ class SubscriptionClient:
         api_secret: str,
         *,
         base_url: str = "https://subscriptions.vestaboard.com",
-        headers: Optional[Mapping[str, str]] = None,
+        headers: Mapping[str, str] | None = None,
     ):
         all_headers = {
             "x-vestaboard-api-key": api_key,
@@ -323,7 +317,7 @@ class SubscriptionClient:
     def __repr__(self):
         return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
-    def get_subscriptions(self) -> List[Dict[str, Any]]:
+    def get_subscriptions(self) -> list[dict[str, Any]]:
         """Lists all subscriptions to which the viewer has access."""
         resp = self.http.request("GET", "/subscriptions")
         return resp.json()
@@ -331,8 +325,8 @@ class SubscriptionClient:
     def send_message(
         self,
         subscription_id: str,
-        message: Union[str, Rows],
-    ) -> Dict[str, Any]:
+        message: str | Rows,
+    ) -> dict[str, Any]:
         """Send a new message to a subscription.
 
         The authenticated viewer must have access to the subscription.
@@ -348,7 +342,7 @@ class SubscriptionClient:
 
         :raises ValueError: if ``message`` is a list with unsupported dimensions
         """
-        data: Dict[str, Union[str, Rows]]
+        data: dict[str, str | Rows]
         if isinstance(message, str):
             data = {"text": message}
         elif isinstance(message, list):
@@ -387,7 +381,7 @@ class CloudClient:
         api_token: str,
         *,
         base_url: str = "https://cloud.vestaboard.com",
-        headers: Optional[Mapping[str, str]] = None,
+        headers: Mapping[str, str] | None = None,
     ):
         all_headers = {"X-Vestaboard-Token": api_token}
         if headers:
@@ -398,7 +392,7 @@ class CloudClient:
     def __repr__(self):
         return f'{type(self).__name__}(base_url="{self.http.base_url!s}")'
 
-    def read_message(self) -> Optional[Rows]:
+    def read_message(self) -> Rows | None:
         """Read the Vestaboard's current message."""
         resp = self.http.request("GET", "")
         layout = resp.json({}).get("currentMessage", {}).get("layout")
@@ -408,7 +402,7 @@ class CloudClient:
 
     def write_message(
         self,
-        message: Union[str, Rows],
+        message: str | Rows,
         *,
         forced: bool = False,
     ) -> bool:
@@ -428,7 +422,7 @@ class CloudClient:
 
         :raises ValueError: if ``message`` is a list with unsupported dimensions
         """
-        data: Dict[str, Any]
+        data: dict[str, Any]
         if isinstance(message, str):
             data = {"text": message}
         elif isinstance(message, list):
@@ -443,7 +437,7 @@ class CloudClient:
         resp = self.http.request("POST", "", json=data)
         return 200 <= resp.status < 300
 
-    def get_transition(self) -> Dict[str, Any]:
+    def get_transition(self) -> dict[str, Any]:
         """Get the current transition settings.
 
         :returns: A dict with ``transition`` and ``transitionSpeed`` keys.
@@ -455,7 +449,7 @@ class CloudClient:
         self,
         transition: Literal["classic", "wave", "drift", "curtain"],
         speed: Literal["gentle", "fast"],
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Update the transition settings.
 
         ``transition`` selects the animation style: ``"classic"``, ``"wave"``,
@@ -481,7 +475,7 @@ class VBMLClient:
         self,
         *,
         base_url: str = "https://vbml.vestaboard.com/",
-        headers: Optional[Mapping[str, str]] = None,
+        headers: Mapping[str, str] | None = None,
     ):
         self.http = http.Client(base_url=base_url, headers=headers)
 
@@ -490,8 +484,8 @@ class VBMLClient:
 
     def compose(
         self,
-        components: List[Component],
-        props: Optional[Props] = None,
+        components: list[Component],
+        props: Props | None = None,
     ) -> Rows:
         """Composes one or more styled components into rows of character codes.
 
@@ -505,7 +499,7 @@ class VBMLClient:
         if not components:
             raise ValueError("expected at least one component")
 
-        data: Dict[str, Union[Props, List[Dict]]] = {
+        data: dict[str, Props | list[dict]] = {
             "components": [component.asdict() for component in components],
         }
         if props:

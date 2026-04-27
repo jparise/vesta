@@ -18,19 +18,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import annotations
-
 import enum
 import math
 import sys
-from typing import Container
+from collections.abc import Container
 from typing import Final
-from typing import List
 from typing import Literal
-from typing import Optional
 from typing import TextIO
-from typing import Tuple
-from typing import Union
 from typing import cast
 
 PRINTABLE = " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$() - +&=;: '\"%,.  /? °"
@@ -43,10 +37,10 @@ COLS: Final[int] = 22
 ROWS: Final[int] = 6
 
 #: A row of character codes.
-Row = List[int]
+Row = list[int]
 
 #: A list of rows, forming a character grid.
-Rows = List[Row]
+Rows = list[Row]
 
 
 def validate_rows(rows: Rows) -> None:
@@ -159,7 +153,7 @@ def encode_text(
     s: str,
     *,
     align: Literal["left", "center", "right"] = "left",
-    valign: Optional[Literal["top", "middle", "bottom"]] = "top",
+    valign: Literal["top", "middle", "bottom"] | None = "top",
     max_rows: int = ROWS,
     margin: int = 0,
     fill: int = Color.BLANK,
@@ -211,7 +205,7 @@ def encode_text(
     # Find a place to break the line at a `breaks` character that results in
     # the longest row possible (up to `max_cols`). The result is a pair of
     # positions: the end of the resulting row and the start of the remainder.
-    def find_break(line: Row) -> Tuple[int, int]:
+    def find_break(line: Row) -> tuple[int, int]:
         end = min(len(line), max_cols)
         for pos in range(end, 0, -1):
             if line[pos] in breaks:
@@ -266,7 +260,7 @@ def _format_row(row: Row, align: str, margin: int, fill: int) -> Row:
 
 
 def pprint(
-    data: Union[Row, Rows],
+    data: Row | Rows,
     stream: TextIO = sys.stdout,
     *,
     sep: str = "|",
