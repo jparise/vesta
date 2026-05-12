@@ -36,7 +36,7 @@ docs = [
     "sphinx_mdinclude==0.6.0",
 ]
 lint = [
-    "mypy==2.0.0",
+    "mypy==2.1.0",
     "ruff==0.15.0",
     {include-group = "test"},
 ]
