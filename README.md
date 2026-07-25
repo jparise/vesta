@@ -28,6 +28,7 @@ the Developer section of the web app.
 
 ```py
 import vesta
+
 cloud_client = vesta.CloudClient("api_token")
 
 # Write and read messages:
@@ -58,6 +59,7 @@ code (such as `{5}` or `{65}`).
 
 ```py
 import vesta
+
 subscription_client = vesta.SubscriptionClient("api_key", "api_secret")
 
 # List subscriptions and send them messages:
@@ -77,6 +79,7 @@ in order to use the Local API.
 
 ```py
 import vesta
+
 local_client = vesta.LocalClient()
 
 # The Vestaboard's Local API must be enabled to get its Local API key. After
@@ -173,10 +176,12 @@ margin control, and line breaks.
 Lastly, `pprint()` can be used to pretty-print encoded characters to the
 console, which can be useful during development.
 
+<!-- fmt:off -->
 ```pycon
 >>> vesta.pprint([0, 0, 0, 67, 0, 8, 5, 12, 12, 15, 55, 0, 23, 15, 18, 12, 4, 0, 68, 0, 0, 0])
 | | | |◼︎| |H|E|L|L|O|,| |W|O|R|L|D| |◼︎| | | |
 ```
+<!-- fmt:on -->
 
 ## Examples
 
