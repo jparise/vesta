@@ -32,8 +32,6 @@ import vesta
 
 API_URL = "https://api.livetennisapi.com/api/public/v1/matches"
 
-COLUMNS = 22
-
 
 def asciify(s: str) -> str:
     """Reduce a string to ASCII by dropping accents (and any other
@@ -60,7 +58,7 @@ def format_match(match: dict) -> list[str]:
     points = score.get("points") or [None, None]
     server = score.get("server")
 
-    rows = [asciify(match.get("tournament", ""))[:COLUMNS]]
+    rows = [asciify(match.get("tournament", ""))[: vesta.chars.COLS]]
     for index in (0, 1):
         player = match["players"]["p1" if index == 0 else "p2"]
         name = asciify(player.get("name") or "?")
@@ -69,7 +67,7 @@ def format_match(match: dict) -> list[str]:
         current_games = games[index][-1] if games[index] else 0
         point = points[index] or ""
         row = f"{serving}{surname[:12]:<13}{sets[index]}{current_games:>3} {point}"
-        rows.append(row[:COLUMNS])
+        rows.append(row[: vesta.chars.COLS])
     return rows
 
 
