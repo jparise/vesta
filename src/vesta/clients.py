@@ -23,7 +23,6 @@ import warnings
 from collections.abc import Mapping
 from typing import Any
 from typing import Literal
-from typing import cast
 
 from . import http
 from .chars import Rows
@@ -158,10 +157,7 @@ class LocalClient:
     @property
     def api_key(self) -> str | None:
         """The client's Local API key."""
-        return cast(
-            str | None,
-            self.http.headers.get("X-Vestaboard-Local-Api-Key"),
-        )
+        return self.http.headers.get("X-Vestaboard-Local-Api-Key")
 
     @api_key.setter
     def api_key(self, value: str) -> None:

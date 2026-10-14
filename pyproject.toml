@@ -36,8 +36,8 @@ docs = [
     "sphinx_mdinclude==0.6.0",
 ]
 lint = [
-    "mypy==2.3.0",
     "ruff==0.17.0",
+    "ty==0.0.87",
     {include-group = "test"},
 ]
 test = [
@@ -59,12 +59,11 @@ version = {attr = "vesta.__version__"}
 branch = true
 source = ["src"]
 
-[tool.mypy]
-packages = ["vesta", "tests"]
-python_version = "3.11"
-
 [tool.pytest.ini_options]
 addopts = "--cov=vesta --cov-report=term-missing --doctest-modules"
+
+[tool.ty.src]
+include = ["src", "tests"]
 
 [tool.ruff]
 src = ["src", "tests"]
