@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import http.client
+import email.message
 import io
 import urllib.error
+import urllib.response
 
 import pytest
 
@@ -27,23 +28,9 @@ def mock_response(monkeypatch):
                     "headers": dict(request.headers),
                 }
             )
-
-            class FakeSocket:
-                def __init__(self, response_bytes):
-                    self._file = io.BytesIO(response_bytes)
-
-                def makefile(self, mode):
-                    return self._file
-
-            response_text = (
-                f"HTTP/1.1 {status_code} OK\r\nContent-Length: {len(body)}\r\n\r\n"
-            ).encode() + body
-
-            sock = FakeSocket(response_text)
-            resp = http.client.HTTPResponse(sock)
-            resp.begin()
-
-            return resp
+            return urllib.response.addinfourl(
+                io.BytesIO(body), email.message.Message(), request.full_url, status_code
+            )
 
         monkeypatch.setattr(client._opener, "open", fake_open)
         return last_request
@@ -109,7 +96,7 @@ class TestClient:
 
         def raise_error(request):
             raise urllib.error.HTTPError(
-                request.get_full_url(), 404, "Not Found", {}, None
+                request.get_full_url(), 404, "Not Found", email.message.Message(), None
             )
 
         monkeypatch.setattr(client._opener, "open", raise_error)

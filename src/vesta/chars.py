@@ -282,7 +282,7 @@ def pprint(
         if 0 <= code < len(PRINTABLE):
             return PRINTABLE[code]
         try:
-            color = Color(code)  # type: ignore
+            color = Color(code)
         except ValueError:
             raise ValueError(f"unknown character code: {code}")
         return f"{color.ansi}{block}\033[0m" if colors else block
