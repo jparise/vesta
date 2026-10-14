@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.15.0 - Unreleased
+### Added
+- Added support for Python 3.15.
+
+### Removed
+- Dropped support for Python 3.10.
+
 ## 0.14.0 - 2026-04-26
 ### Added
 - `CloudClient` provides a client interface to Vestaboard's Cloud API, which
