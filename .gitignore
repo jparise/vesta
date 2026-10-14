@@ -9,4 +9,5 @@ _pycache__/
 build/
 docs/_build/
 dist/
-.venv
+.venv/
+uv.lock

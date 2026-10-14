@@ -24,6 +24,7 @@ import sys
 from collections.abc import Container
 from typing import Final
 from typing import Literal
+from typing import Self
 from typing import TextIO
 from typing import cast
 
@@ -57,7 +58,7 @@ class Color(enum.IntEnum):
 
     ansi: str
 
-    def __new__(cls, value: int, ansi: str) -> "Color":
+    def __new__(cls, value: int, ansi: str) -> Self:
         obj = int.__new__(cls, value)
         obj._value_ = value
         obj.ansi = ansi
